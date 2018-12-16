@@ -13,3 +13,11 @@ Generate/Load data file for optimization.
     ```bash
     rosrun fgs_opt_data_storage generate_2d PATH_TO_THIS_PACKAGE/config/sample_2d.yaml
     ```
+
+# fgs_opt_data_storage_load_sample
+
+    A sample to use loading library.
+
+    ```bash
+    rosrun fgs_opt_data_storage fgs_opt_data_storage_load_sample /tmp/data_2d.yaml
+    ```
