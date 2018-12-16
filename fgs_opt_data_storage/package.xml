@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <package>
-  <name>fgs_opt_data_generator</name>
+  <name>fgs_opt_data_storage</name>
   <version>0.0.0</version>
-  <description>The fgs_opt_data_generator package</description>
+  <description>The fgs_opt_data_storage package</description>
 
   <maintainer email="fugashy@icloud.com">fugashy</maintainer>
 
