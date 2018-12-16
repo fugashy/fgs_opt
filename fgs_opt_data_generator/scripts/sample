@@ -1,0 +1,15 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+from fgs_opt_data_generator import data_2d
+from sys import exit
+
+
+if __name__ == '__main__':
+    try:
+        data_2d.create()
+    except Exception as e:
+        print(e.message)
+        exit(-1)
+
+    exit(0)
