@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8.3)
-project(fgs_opt_data_generator)
+project(fgs_opt_data_storage)
 
 find_package(catkin REQUIRED COMPONENTS
   rospy
@@ -12,6 +12,6 @@ catkin_package(
 )
 
 install(PROGRAMS
-  scripts/sample
+  scripts/generate_data_2d
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
