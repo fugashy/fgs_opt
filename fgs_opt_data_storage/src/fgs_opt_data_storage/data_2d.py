@@ -9,6 +9,17 @@ def create(conf_dict):
         step = conf_dict['step']
         alpha = conf_dict['alpha']
         return Curve(start, end, step, alpha)
+    elif conf_dict['type'] == 'ellipse':
+        a = conf_dict['a']
+        b = conf_dict['b']
+        rotation = conf_dict['rotation']
+        translation = conf_dict['translation']
+        theta_start = conf_dict['theta_start']
+        theta_end = conf_dict['theta_end']
+        theta_step = conf_dict['theta_step']
+        return Ellipse(
+                a, b, rotation, translation,
+                theta_start, theta_end, theta_step)
     else:
         raise NotImplementedError(
                 '{} is not implemented.'.format(conf_dict['type']))
@@ -41,3 +52,29 @@ class Curve():
 
     def create(self):
         return curve(self.__start, self.__end, self.__step, self.__alpha)
+
+
+class Ellipse():
+    def __init__(
+            self, a, b, rotation, translation,
+            theta_start, theta_end, theta_step):
+        self.__a = a
+        self.__b = b
+        self.__rot = rotation
+        self.__trs = translation
+        self.__ts = theta_start
+        self.__te = theta_end
+        self.__tstep = theta_step
+
+    def create(self):
+        theta_range = np.arange(self.__ts, self.__te, self.__tstep)
+
+        trs = self.__trs
+
+        xy = lambda t: \
+            np.array([self.__a * np.cos(t) + trs[0],
+                      self.__b * np.sin(t) + trs[1]])
+        rot_mat = np.array([[np.cos(self.__rot), -np.sin(self.__rot)],
+                            [np.sin(self.__rot), np.cos(self.__rot)]])
+
+        return [np.dot(rot_mat, xy(t)) for t in theta_range]
