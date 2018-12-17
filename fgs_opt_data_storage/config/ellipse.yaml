@@ -1,0 +1,17 @@
+model:
+  type: ellipse
+  a: 2.
+  b: 4.
+  rotation: 0.7 # rad
+  translation: [5., 6.]
+  theta_start: 0.
+  theta_end: 6.28
+  theta_step: 0.1
+
+noise_model:
+  type: gaussian
+  sigma: 0.1
+
+saver:
+  type: cv
+  output_path: /tmp/data_2d.yaml
