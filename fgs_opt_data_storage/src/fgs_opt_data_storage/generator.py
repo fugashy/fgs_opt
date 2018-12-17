@@ -2,6 +2,7 @@
 import data_2d
 import noise_model
 import saver
+import plot
 
 import yaml
 
@@ -16,5 +17,6 @@ def generate_2d(config_path):
 
     # generate
     data = m.create()
-    noisy_data = [[x, nm.convert(y)] for x, y in data]
+    noisy_data = [[nm.convert(x), nm.convert(y)] for x, y in data]
     fs.save(noisy_data)
+    plot.model_and_observed(data, noisy_data, ('x', 'f(x)'))
