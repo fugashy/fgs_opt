@@ -24,6 +24,13 @@ def create(conf_dict):
         translation = conf_dict['translation']
         num = conf_dict['num']
         return Const(translation, num)
+    elif conf_dict['type'] == 'line':
+        a = conf_dict['a']
+        b = conf_dict['b']
+        start = conf_dict['start']
+        end = conf_dict['end']
+        step = conf_dict['step']
+        return Line(a, b, start, end, step)
     else:
         raise NotImplementedError(
                 '{} is not implemented.'.format(conf_dict['type']))
@@ -91,3 +98,19 @@ class Const():
 
     def create(self):
         return [self.__trs for i in range(self.__num)]
+
+
+class Line():
+    def __init__(self, a, b, start, end, step):
+        self.__a = a
+        self.__b = b
+        self.__s = start
+        self.__e = end
+        self.__st = step
+
+    def create(self):
+        x_range = np.arange(self.__s, self.__e, self.__st)
+
+        f = lambda x: self.__a * x + self.__b
+
+        return [ [x, f(x)] for x in x_range]
