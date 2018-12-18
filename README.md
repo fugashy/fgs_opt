@@ -28,7 +28,15 @@ Following optimizer are used.
 
 # Packages
 
-| name | detail |
-| ---- | ---- |
-| fgs_ceres_playground | Optimization samples using Ceres-Solver |
-| fgs_opt_data_storage | Optimization data I/O |
+## fgs_ceres_playground
+
+Optimization samples using Ceres-Solver
+
+## fgs_opt_data_storage
+
+Provide data generator for optimization
+
+Like this
+
+
+![ellipse2d](fgs_opt_data_storage/image/ellipse2d.png "ellipse2d")
