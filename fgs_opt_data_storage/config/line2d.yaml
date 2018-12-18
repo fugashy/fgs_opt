@@ -1,0 +1,15 @@
+model:
+  type: line
+  a: 2.
+  b: 5.
+  start: -10.
+  end: 10.
+  step: 0.2
+
+noise_model:
+  type: gaussian
+  sigma: 1.
+
+saver:
+  type: cv
+  output_path: /tmp/data_2d.yaml
