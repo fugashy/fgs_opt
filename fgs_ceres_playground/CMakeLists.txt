@@ -27,6 +27,13 @@ target_link_libraries(${PROJECT_NAME}_curve_fitting
   ${catkin_LIBRARIES}
   ${CERES_LIBRARIES}
 )
+
+add_executable(${PROJECT_NAME}_line_fitting
+  src/${PROJECT_NAME}/line_fitting.cpp)
+target_link_libraries(${PROJECT_NAME}_line_fitting
+  ${catkin_LIBRARIES}
+  ${CERES_LIBRARIES}
+)
 install(TARGETS ${PROJECT_NAME}_curve_fitting
   ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
