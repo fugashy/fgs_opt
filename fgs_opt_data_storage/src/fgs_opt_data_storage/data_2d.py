@@ -20,6 +20,10 @@ def create(conf_dict):
         return Ellipse(
                 a, b, rotation, translation,
                 theta_start, theta_end, theta_step)
+    elif conf_dict['type'] == 'const':
+        translation = conf_dict['translation']
+        num = conf_dict['num']
+        return Const(translation, num)
     else:
         raise NotImplementedError(
                 '{} is not implemented.'.format(conf_dict['type']))
@@ -78,3 +82,12 @@ class Ellipse():
                             [np.sin(self.__rot), np.cos(self.__rot)]])
 
         return [np.dot(rot_mat, xy(t)) for t in theta_range]
+
+
+class Const():
+    def __init__(self, translation, num):
+        self.__trs = translation
+        self.__num = num
+
+    def create(self):
+        return [self.__trs for i in range(self.__num)]

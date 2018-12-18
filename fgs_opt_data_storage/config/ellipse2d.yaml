@@ -5,8 +5,8 @@ model:
   rotation: 0.7 # rad
   translation: [5., 6.]
   theta_start: 0.
-  theta_end: 6.28
-  theta_step: 0.1
+  theta_end: 6.3
+  theta_step: 0.02
 
 noise_model:
   type: gaussian
