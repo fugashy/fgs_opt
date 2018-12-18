@@ -1,7 +1,6 @@
-#ifndef FGS_CERES_PLAYGROUND_ERROR_FUNCTIONS_HPP_
-#define FGS_CERES_PLAYGROUND_ERROR_FUNCTIONS_HPP_
+#ifndef FGS_CERES_PLAYGROUND_CURVE_FITTING_HPP_
+#define FGS_CERES_PLAYGROUND_CURVE_FITTING_HPP_
 #include "fgs_ceres_playground/data.hpp"
-
 
 namespace fgs {
 namespace ceres_playground {
