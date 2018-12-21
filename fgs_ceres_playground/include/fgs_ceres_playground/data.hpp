@@ -20,6 +20,21 @@ struct Point2d : public std::vector<double> {
 
   double get_x() const { return (*this)[0]; }
   double get_y() const { return (*this)[1]; }
+
+  static void CvToDataArray(
+      const cv::Mat& data_mat, std::vector<Point2d>& data_array) {
+    if (data_mat.empty()) {
+      throw std::runtime_error("data mat is empty");
+    } else if (data_mat.rows == 0 || data_mat.cols != 2) {
+      throw std::runtime_error("data mat size is invalid");
+    }
+    std::vector<Point2d>().swap(data_array);
+    data_array.resize(data_mat.rows);
+    for (int i = 0; i < data_mat.rows; ++i) {
+      Point2d data(data_mat.at<double>(i, 0), data_mat.at<double>(i, 1));
+      data_array[i] = data;
+    }
+  }
 };
 
 }
