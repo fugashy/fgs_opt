@@ -4,17 +4,22 @@
 namespace fgs {
 namespace ceres_playground {
 
-template<typename T>
-struct Point2d {
-  T x;
-  T y;
-};
+struct Point2d : public std::vector<double> {
+  Point2d() {
+    this->resize(2);
+    (*this)[0] = (*this)[1] = 0.0;
+  }
+  Point2d(double x, double y) {
+    this->resize(2);
+    (*this)[0] = x;
+    (*this)[1] = y;
+  }
 
-template<typename T>
-struct Point3d {
-  T x;
-  T y;
-  T z;
+  void x(double x) { (*this)[0] = x; }
+  void y(double y) { (*this)[1] = y; }
+
+  double get_x() const { return (*this)[0]; }
+  double get_y() const { return (*this)[1]; }
 };
 
 }

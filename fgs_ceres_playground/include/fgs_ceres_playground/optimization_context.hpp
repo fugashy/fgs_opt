@@ -8,34 +8,36 @@
 namespace fgs {
 namespace ceres_playground {
 
-template<class T>
+template<class ResidualType>
 class ByAutoDiffOptimizationContext {
  public:
-  ByAutoDiffOptimizationContext(const cv::Mat& data) {
+  ByAutoDiffOptimizationContext(const cv::Mat& data_mat) {
     param_.Init();
 
-    for (int i = 0; i < data.rows; ++i) {
-      Point2d<double> p;
-      p.x = data.at<double>(i, 0);
-      p.y = data.at<double>(i, 1);
+    std::vector<typename ResidualType::DataType> data_array;
+    ResidualType::CvToDataArray(data_mat, data_array);
+    for (auto it = data_array.begin(); it != data_array.end(); ++it) {
       problem_.AddResidualBlock(
-          new ceres::AutoDiffCostFunction<T, 1, 2>(new T(p)), NULL, &param_[0]);
+          new ceres::AutoDiffCostFunction<
+              ResidualType,
+              ResidualType::D,
+              ResidualType::Parameter::D>(new ResidualType((*it))), NULL, &param_[0]);
     }
   }
 
-  void Solve(ceres::Solver::Options& options, ceres::Solver::Summary& summary) {
-    summary = ceres::Solver::Summary();
+  void Solve(ceres::Solver::Options& options) {
+    std::cout << "Before" << std::endl;
+    param_.Show();
 
+    ceres::Solver::Summary summary;
     ceres::Solve(options, &problem_, &summary);
-    std::cout << summary.BriefReport() << std::endl;
 
-    for (auto it = param_.begin(); it != param_.end(); ++it) {
-      std::cout << "result: " << (*it) << std::endl;
-    }
+    std::cout << "After" << std::endl;
+    param_.Show();
   }
 
  private:
-  typename T::Parameter param_;
+  typename ResidualType::Parameter param_;
   ceres::Problem problem_;
   cv::Mat data_;
 };
