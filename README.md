@@ -24,13 +24,19 @@ Following optimizer are used.
 
   <https://github.com/RainerKuemmerle/g2o>
 
-- From scratch (not implemented yet)
+- From scratch
+
+  fgs_opt_from_scratch package in this repos.
 
 # Packages
 
 ## fgs_ceres_playground
 
 Optimization samples using Ceres-Solver
+
+## fgs_opt_from_scratch
+
+Written from scratch
 
 ## fgs_opt_data_storage
 
