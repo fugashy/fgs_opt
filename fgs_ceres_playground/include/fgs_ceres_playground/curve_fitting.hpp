@@ -1,28 +1,16 @@
 #ifndef FGS_CERES_PLAYGROUND_CURVE_FITTING_HPP_
 #define FGS_CERES_PLAYGROUND_CURVE_FITTING_HPP_
 #include "fgs_ceres_playground/data.hpp"
+#include "fgs_ceres_playground/parameter.hpp"
 
 namespace fgs {
 namespace ceres_playground {
 
 struct SimpleCurve2dResidual {
-  struct Parameter : public std::vector<double> {
-    Parameter() {
-      this->resize(1);
-      (*this)[0] = 0.0;
-    }
-    void Init() {
-      (*this)[0] = 3.0;
-    }
-    void Show() {
-      std::cout << "a: " << (*this)[0] << std::endl;
-    }
-    const static int D;
-
-  };
-
   typedef Point2d DataType;
   typedef std::vector<DataType> DataArrayType;
+
+  typedef Parameter<1> ParameterType;
 
   explicit SimpleCurve2dResidual(const DataType& data) : data_(data) {}
 
@@ -33,29 +21,19 @@ struct SimpleCurve2dResidual {
     return true;
   }
 
-  const static int D;
-
-  static void CvToDataArray(
-      const cv::Mat& data_mat, DataArrayType& data_array) {
-    if (data_mat.empty()) {
-      throw std::runtime_error("data mat is empty");
-    } else if (data_mat.rows == 0 || data_mat.cols != 2) {
-      throw std::runtime_error("data mat size is invalid");
-    }
-    DataArrayType().swap(data_array);
-    data_array.resize(data_mat.rows);
-    for (int i = 0; i < data_mat.rows; ++i) {
-      DataType data(data_mat.at<double>(i, 0), data_mat.at<double>(i, 1));
-      data_array[i] = data;
-    }
+  static void ShowParam(const ParameterType& param) {
+    std::cout << '\t' << "a: " << param[0] << std::endl;
   }
+
+  const static int DimResidual;
+  const static int DimParam;
 
  private:
   DataType data_;
 };
 
-const int SimpleCurve2dResidual::D = 1;
-const int SimpleCurve2dResidual::Parameter::D = 1;
+const int SimpleCurve2dResidual::DimResidual = 1;
+const int SimpleCurve2dResidual::DimParam = 1;
 
 }
 }

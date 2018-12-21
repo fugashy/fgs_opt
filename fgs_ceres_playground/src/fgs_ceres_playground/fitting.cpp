@@ -2,12 +2,14 @@
 #include "fgs_ceres_playground/optimization_context.hpp"
 #include "fgs_ceres_playground/line_fitting.hpp"
 #include "fgs_ceres_playground/curve_fitting.hpp"
+#include "fgs_ceres_playground/circle_fitting.hpp"
 
 #include <fgs_opt_data_storage/loader.hpp>
 
 using fgs::ceres_playground::Point2d;
 using fgs::ceres_playground::Line2dResidual;
 using fgs::ceres_playground::SimpleCurve2dResidual;
+using fgs::ceres_playground::Circle2dResidual;
 using fgs::ceres_playground::ByAutoDiffOptimizationContext;
 using fgs::opt_data_storage::LoadCVYaml;
 
@@ -31,6 +33,9 @@ int main(int argc, char** argv) {
     solver.Solve(options);
   } else if (type == "curve2d") {
     ByAutoDiffOptimizationContext<SimpleCurve2dResidual> solver(data);
+    solver.Solve(options);
+  } else if (type == "circle2d") {
+    ByAutoDiffOptimizationContext<Circle2dResidual> solver(data);
     solver.Solve(options);
   }
 
