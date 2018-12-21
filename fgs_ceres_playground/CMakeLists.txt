@@ -19,22 +19,14 @@ include_directories(
   ${CERES_INCLUDE_DIRS}
 )
 
-message(WARN ${CERES_LIBRARIES})
-
-add_executable(${PROJECT_NAME}_curve_fitting
-  src/${PROJECT_NAME}/curve_fitting.cpp)
-target_link_libraries(${PROJECT_NAME}_curve_fitting
+add_executable(${PROJECT_NAME}_fitting
+  src/${PROJECT_NAME}/fitting.cpp)
+target_link_libraries(${PROJECT_NAME}_fitting
   ${catkin_LIBRARIES}
   ${CERES_LIBRARIES}
 )
 
-add_executable(${PROJECT_NAME}_line_fitting
-  src/${PROJECT_NAME}/line_fitting.cpp)
-target_link_libraries(${PROJECT_NAME}_line_fitting
-  ${catkin_LIBRARIES}
-  ${CERES_LIBRARIES}
-)
-install(TARGETS ${PROJECT_NAME}_curve_fitting
+install(TARGETS ${PROJECT_NAME}_fitting
   ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
