@@ -11,4 +11,4 @@ noise_model:
 
 saver:
   type: cv
-  output_path: /tmp/data_2d.yaml
+  output_path: /tmp/data_curve2d.yaml
