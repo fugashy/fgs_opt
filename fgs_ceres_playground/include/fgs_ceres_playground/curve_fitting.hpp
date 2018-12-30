@@ -16,7 +16,7 @@ struct SimpleCurve2dResidual {
 
   template<typename T>
   bool operator() (const T* parameter, T* residual) const {
-    residual[0] = data_[1] - parameter[0] * data_[1] *data_[1];
+    residual[0] = data_[1] - (parameter[0] * data_[0] * data_[0]);
 
     return true;
   }
