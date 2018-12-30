@@ -1,8 +1,37 @@
 #ifndef FGS_CERES_PLAYGROUND_DATA_HPP_
 #define FGS_CERES_PLAYGROUND_DATA_HPP_
+#include <vector>
+
+#include <opencv2/core.hpp>
 
 namespace fgs {
 namespace ceres_playground {
+
+struct Value : public std::vector<double> {
+  Value() {
+    this->resize(1);
+    (*this)[0] = 0.0;
+  }
+  Value(double value) {
+    this->resize(1);
+    (*this)[0] = value;
+  }
+
+  static void CvToDataArray(
+      const cv::Mat& data_mat, std::vector<Value>& data_array) {
+    if (data_mat.empty()) {
+      throw std::runtime_error("data mat is empty");
+    } else if (data_mat.rows == 0 || data_mat.cols != 1) {
+      throw std::runtime_error("data mat size is invalid");
+    }
+    std::vector<Value>().swap(data_array);
+    data_array.resize(data_mat.rows);
+    for (int i = 0; i < data_mat.rows; ++i) {
+      Value data(data_mat.at<double>(i, 0));
+      data_array[i] = data;
+    }
+  }
+};
 
 struct Point2d : public std::vector<double> {
   Point2d() {

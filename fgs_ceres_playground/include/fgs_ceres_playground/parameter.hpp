@@ -4,6 +4,8 @@
 #include <memory>
 #include <vector>
 
+#include "fgs_ceres_playground/randomizer.hpp"
+
 namespace fgs {
 namespace ceres_playground {
 
@@ -17,22 +19,10 @@ struct Parameter : public std::vector<double> {
   }
 
   void Init(double scale) {
-    if (std::abs(scale) < std::numeric_limits<double>::epsilon()) {
-      std::cerr << "zero is not supported." << std::endl;
-      return;
-    }
-
-    std::shared_ptr<std::uniform_real_distribution<>> dist;
-    if (scale > 0.0) {
-      dist.reset(new std::uniform_real_distribution<>(-scale, scale));
-    } else {
-      dist.reset(new std::uniform_real_distribution<>(scale, -scale));
-    }
-
-    std::random_device seed_gen;
-    std::mt19937 engine(seed_gen());
+    std::vector<double>().swap(*this);
+    this->resize(D);
     for (int i = 0; i < D; ++i) {
-      (*this)[i] = (*dist)(engine);
+      (*this)[i] = Randomizer::GenerateByURD(scale);
     }
   }
 };

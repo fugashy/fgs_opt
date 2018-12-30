@@ -19,6 +19,13 @@ include_directories(
   ${CERES_INCLUDE_DIRS}
 )
 
+add_executable(${PROJECT_NAME}_hello_world
+  src/${PROJECT_NAME}/hello_world.cpp)
+target_link_libraries(${PROJECT_NAME}_hello_world
+  ${catkin_LIBRARIES}
+  ${CERES_LIBRARIES}
+)
+
 add_executable(${PROJECT_NAME}_fitting
   src/${PROJECT_NAME}/fitting.cpp)
 target_link_libraries(${PROJECT_NAME}_fitting
