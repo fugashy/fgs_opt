@@ -37,15 +37,15 @@ struct Circle2dResidual {
               << '\t' << "ty: " << param[2] << std::endl;
   }
 
-  const static int DimResidual;
-  const static int DimParam;
+  static ceres::CostFunction* Create(const DataType& data) {
+    return (new ceres::AutoDiffCostFunction<Circle2dResidual, 1, 3>(
+          new Circle2dResidual(data)));
+  }
 
  private:
   DataType data_;
 };
 
-const int Circle2dResidual::DimResidual = 1;
-const int Circle2dResidual::DimParam = 3;
 }
 }
 

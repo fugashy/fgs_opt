@@ -14,14 +14,10 @@ class ByAutoDiffOptimizationContext {
   ByAutoDiffOptimizationContext(const cv::Mat& data_mat) {
     param_.Init(100.0);
 
-    std::vector<typename ResidualType::DataType> data_array;
+    typename ResidualType::DataArrayType data_array;
     ResidualType::DataType::CvToDataArray(data_mat, data_array);
     for (auto it = data_array.begin(); it != data_array.end(); ++it) {
-      problem_.AddResidualBlock(
-          new ceres::AutoDiffCostFunction<
-              ResidualType,
-              ResidualType::DimResidual,
-              ResidualType::DimParam>(new ResidualType((*it))), NULL, &param_[0]);
+      problem_.AddResidualBlock(ResidualType::Create(*it), NULL, &param_[0]);
     }
   }
 
