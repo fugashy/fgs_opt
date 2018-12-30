@@ -26,15 +26,13 @@ struct Line2dResidual {
               << '\t' << "b: " << param[1] << std::endl;
   }
 
-  const static int DimResidual;
-  const static int DimParam;
+  static ceres::CostFunction* Create(const DataType& data) {
+    return (new ceres::AutoDiffCostFunction<Line2dResidual, 1, 2>(new Line2dResidual(data)));
+  }
 
  private:
   DataType data_;
 };
-
-const int Line2dResidual::DimResidual = 1;
-const int Line2dResidual::DimParam = 2;
 
 }
 }

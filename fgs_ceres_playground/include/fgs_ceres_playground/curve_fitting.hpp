@@ -25,15 +25,14 @@ struct SimpleCurve2dResidual {
     std::cout << '\t' << "a: " << param[0] << std::endl;
   }
 
-  const static int DimResidual;
-  const static int DimParam;
+  static ceres::CostFunction* Create(const DataType& data) {
+    return (new ceres::AutoDiffCostFunction<SimpleCurve2dResidual, 1, 1>(
+          new SimpleCurve2dResidual(data)));
+  }
 
  private:
   DataType data_;
 };
-
-const int SimpleCurve2dResidual::DimResidual = 1;
-const int SimpleCurve2dResidual::DimParam = 1;
 
 }
 }
