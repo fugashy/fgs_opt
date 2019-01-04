@@ -7,7 +7,7 @@
 namespace fgs {
 namespace ceres_playground {
 
-struct Value : public std::vector<double> {
+struct Value : private std::vector<double> {
   Value() {
     this->resize(1);
     (*this)[0] = 0.0;
@@ -15,6 +15,9 @@ struct Value : public std::vector<double> {
   Value(double value) {
     this->resize(1);
     (*this)[0] = value;
+  }
+  ~Value() {
+    std::vector<double>().swap(*this);
   }
 
   static void CvToDataArray(
@@ -31,9 +34,11 @@ struct Value : public std::vector<double> {
       data_array[i] = data;
     }
   }
+
+  using std::vector<double>::operator[];
 };
 
-struct Point2d : public std::vector<double> {
+struct Point2d : private std::vector<double> {
   Point2d() {
     this->resize(2);
     (*this)[0] = (*this)[1] = 0.0;
@@ -42,6 +47,9 @@ struct Point2d : public std::vector<double> {
     this->resize(2);
     (*this)[0] = x;
     (*this)[1] = y;
+  }
+  ~Point2d() {
+    std::vector<double>().swap(*this);
   }
 
   void x(double x) { (*this)[0] = x; }
@@ -64,6 +72,8 @@ struct Point2d : public std::vector<double> {
       data_array[i] = data;
     }
   }
+
+  using std::vector<double>::operator[];
 };
 
 }

@@ -10,7 +10,7 @@ namespace fgs {
 namespace ceres_playground {
 
 template<int D>
-struct Parameter : public std::vector<double> {
+struct Parameter : private std::vector<double> {
   Parameter() {
     this->resize(D);
     for (int i = 0; i < D; ++i) {
@@ -25,6 +25,8 @@ struct Parameter : public std::vector<double> {
       (*this)[i] = Randomizer::GenerateByURD(scale);
     }
   }
+
+  using std::vector<double>::operator[];
 };
 }
 }
