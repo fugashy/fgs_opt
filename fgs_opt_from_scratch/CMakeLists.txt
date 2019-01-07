@@ -12,6 +12,6 @@ catkin_package(
 )
 
 install(PROGRAMS
-  scripts/my_python_script
+  script/view_func
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
