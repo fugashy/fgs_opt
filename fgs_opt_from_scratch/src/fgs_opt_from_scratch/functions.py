@@ -16,12 +16,17 @@ class Func:
                 'This is pure virtual class. '
                 'Use inherited class.')
 
-    def normal_vector(self):
+    def normal_vector(self, v):
         raise NotImplementedError(
                 'This is pure virtual class. '
                 'Use inherited class.')
 
-    def tangent(self):
+    def tangent(self, v, x):
+        raise NotImplementedError(
+                'This is pure virtual class. '
+                'Use inherited class.')
+
+    def taylor(self):
         raise NotImplementedError(
                 'This is pure virtual class. '
                 'Use inherited class.')
@@ -41,6 +46,10 @@ class Curve2dSampleFunc(Func):
             lambda v: [-2.*a*v[0] - b, 1]
         self.__tngt = \
             lambda v, x: v[1] - (self.__nv(v)[0]*(x - v[0]) / self.__nv(v)[1])
+        self.__taylor1 = \
+            lambda v, x: self.__fx(v[0]) + 2.*a*v[0]*(x - v[0])
+        self.__taylor2 = \
+            lambda v, x: self.__taylor1(v, x) + a * pow(x - v[0], 2.)
 
     def fx(self, x):
         return self.__fx(x)
@@ -53,3 +62,9 @@ class Curve2dSampleFunc(Func):
 
     def tangent(self, v, x):
         return self.__tngt(v, x)
+
+    def taylor(self, v, x, d=1):
+        if d == 1:
+            return self.__taylor1(v, x)
+        else:
+            return self.__taylor2(v, x)
