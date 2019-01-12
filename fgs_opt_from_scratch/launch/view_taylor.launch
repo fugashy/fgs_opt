@@ -1,0 +1,5 @@
+<launch>
+  <node pkg="fgs_opt_from_scratch" type="view_taylor" name="view_taylor">
+    <param name="config_path" value="$(find fgs_opt_from_scratch)/config/taylor.yaml"/>
+  </node>
+</launch>
