@@ -2,13 +2,14 @@
 # -*- coding: utf-8 -*-
 
 import numpy as np
+import yaml
+import rospy
 
 from fgs_opt_from_scratch import functions
 import matplotlib.pylab as plt
 
-func = functions.Curve2dSampleFunc(2, 3, -1)
-x_array = [x for x in np.arange(-50., 50., 1)]
-y_array = [func.fx(x) for x in x_array]
+x_array = []
+y_array = []
 
 def on_click(event):
     plt.clf()
@@ -31,9 +32,19 @@ def on_click(event):
         print('invalid')
 
 if __name__ == '__main__':
+    rospy.init_node('hoge')
+    config_path = rospy.get_param('~config_path')
+    f = open(config_path, 'r')
+    config_dict = yaml.load(f)
+
+    func = functions.create(config_dict)
+    x_array = [x for x in np.arange(-50., 50., 1)]
+    y_array = [func.fx(x) for x in x_array]
+
     fig = plt.figure()
 
     fig.canvas.mpl_connect('button_press_event', on_click)
     plt.plot(x_array, y_array, marker='o')
 
     plt.show()
+
