@@ -12,6 +12,6 @@ catkin_package(
 )
 
 install(PROGRAMS
-  script/view_func
+  script/view_taylor
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )

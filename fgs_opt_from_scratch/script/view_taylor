@@ -1,0 +1,32 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+import numpy as np
+
+from fgs_opt_from_scratch import functions
+import matplotlib.pylab as plt
+
+
+if __name__ == '__main__':
+    func = functions.Curve2dSampleFunc(2, 3, -1)
+
+    x_array = [x for x in np.arange(-20., 20., 1)]
+    y_array = [func.fx(x) for x in x_array]
+
+    taylor_y_arrays = []
+    taylor_x_arrays = []
+    for i in range(len(x_array)):
+        taylor_x_array = []
+        taylor_y_array = []
+        for new_x in np.arange(-30. + x, 30. + x, 1):
+            taylor_x_array.append(new_x)
+            taylor_y_array.append(func.taylor([x_array[i], y_array[i]], new_x, d=1))
+        taylor_x_arrays.append(taylor_x_array)
+        taylor_y_arrays.append(taylor_y_array)
+
+    plt.plot(x_array, y_array, marker='o')
+
+    for i in range(len(taylor_x_array)):
+        plt.plot(taylor_x_array[i], taylor_y_array[i], marker='x')
+
+    plt.show()
