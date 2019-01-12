@@ -6,27 +6,34 @@ import numpy as np
 from fgs_opt_from_scratch import functions
 import matplotlib.pylab as plt
 
+func = functions.Curve2dSampleFunc(2, 3, -1)
+x_array = [x for x in np.arange(-50., 50., 1)]
+y_array = [func.fx(x) for x in x_array]
+
+def on_click(event):
+    plt.clf()
+    if event.xdata is not None:
+        x = event.xdata
+        taylor_x_array = []
+        taylor1_y_array = []
+        taylor2_y_array = []
+        for new_x in np.arange(-70. + x, 70. + x, 1):
+            taylor_x_array.append(new_x)
+            taylor1_y_array.append(func.taylor([x, func.fx(x)], new_x, d=1))
+            taylor2_y_array.append(func.taylor([x, func.fx(x)], new_x, d=2))
+
+        plt.plot(x_array, y_array, marker='o')
+        plt.plot(taylor_x_array, taylor1_y_array, marker='x')
+        plt.plot(taylor_x_array, taylor2_y_array, marker='.')
+
+        plt.show()
+    else:
+        print('invalid')
 
 if __name__ == '__main__':
-    func = functions.Curve2dSampleFunc(2, 3, -1)
+    fig = plt.figure()
 
-    x_array = [x for x in np.arange(-20., 20., 1)]
-    y_array = [func.fx(x) for x in x_array]
-
-    taylor_y_arrays = []
-    taylor_x_arrays = []
-    for i in range(len(x_array)):
-        taylor_x_array = []
-        taylor_y_array = []
-        for new_x in np.arange(-30. + x, 30. + x, 1):
-            taylor_x_array.append(new_x)
-            taylor_y_array.append(func.taylor([x_array[i], y_array[i]], new_x, d=1))
-        taylor_x_arrays.append(taylor_x_array)
-        taylor_y_arrays.append(taylor_y_array)
-
+    fig.canvas.mpl_connect('button_press_event', on_click)
     plt.plot(x_array, y_array, marker='o')
-
-    for i in range(len(taylor_x_array)):
-        plt.plot(taylor_x_array[i], taylor_y_array[i], marker='x')
 
     plt.show()
