@@ -1,0 +1,9 @@
+# type: Curve2Order
+# a: -3.
+# b: -2.
+# c: 5.
+type: Curve3Order
+a: 1.
+b: -8.
+c: -5.
+d: -7.
