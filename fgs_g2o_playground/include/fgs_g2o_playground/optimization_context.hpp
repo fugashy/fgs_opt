@@ -16,13 +16,15 @@ void CurveFitting(const cv::Mat& cv_data_array) {
   std::vector<CurveData*> data_array;
   data_array.reserve(cv_data_array.rows);
   for (int i = 0; i < cv_data_array.rows; ++i) {
-    CurveData* data;
+    CurveData* data(new CurveData);
     data->SetData(cv_data_array.row(i));
     data_array[i] = data;
   }
 
   CurveParameter* param(new CurveParameter());
-  param->Init(100.0);
+  param->setEstimate(Eigen::Vector2d(1, 1));
+//param->Init(100.0);
+  param->ShowParam();
 
   // Cereate optimizer
   typedef g2o::BlockSolver<g2o::BlockSolverTraits<Eigen::Dynamic, Eigen::Dynamic>>
@@ -43,7 +45,7 @@ void CurveFitting(const cv::Mat& cv_data_array) {
   }
 
   optimizer.initializeOptimization();
-  optimizer.setVerbose(true);
+  optimizer.setVerbose(false);
   optimizer.optimize(10);
 
   param->ShowParam();
