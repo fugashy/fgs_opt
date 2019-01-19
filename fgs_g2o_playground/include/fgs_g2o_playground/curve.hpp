@@ -8,10 +8,10 @@
 namespace fgs {
 namespace g2o_playground {
 
-// y = a * e^(-lambda * x) + b
+// y = a * e^(x) + b
 // parameter: a, b, lambda
-class CurveParameter : public g2o::BaseVertex<3,              /* num of param  */
-                                              Eigen::Vector3d /* type of param */> {
+class CurveParameter : public g2o::BaseVertex<2,              /* num of param  */
+                                              Eigen::Vector2d /* type of param */> {
  public:
   EIGEN_MAKE_ALIGNED_OPERATOR_NEW;
 
@@ -32,25 +32,25 @@ class CurveParameter : public g2o::BaseVertex<3,              /* num of param  *
   }
 
   virtual void oplusImpl(const double* update) {
-    Eigen::Vector3d::ConstMapType v(update);
+    Eigen::Vector2d::ConstMapType v(update);
     _estimate += v;
   }
 
   void Init(double scale) {
-    Eigen::Vector3d estimate;
-    for (int i = 0; i < 3; ++i) {
-      estimate[i] = Randomizer::GenerateByURD(scale);
-    }
+    const double a = Randomizer::GenerateByURD(scale);
+    const double b = Randomizer::GenerateByURD(scale);
+    const Eigen::Vector2d estimate(a, b);
     this->setEstimate(estimate);
   }
 
   void ShowParam() {
     std::cout << '\t' << "a: "      << this->estimate()(0) << std::endl
-              << '\t' << "b: "      << this->estimate()(1) << std::endl
-              << '\t' << "lambda: " << this->estimate()(2) << std::endl;
+              << '\t' << "b: "      << this->estimate()(1) << std::endl;
   }
 };
 
+  static int out = -1;
+  static int out_rate = 50;
 class CurveData : public g2o::BaseUnaryEdge<1,               /* dim of residual */
                                             Eigen::Vector2d, /* type of data    */
                                             CurveParameter   /* type of param   */> {
@@ -64,7 +64,7 @@ class CurveData : public g2o::BaseUnaryEdge<1,               /* dim of residual 
     return false;
   }
 
-  virtual bool write(std::ostream& is) {
+  virtual bool write(std::ostream& is) const {
     std::cerr << __PRETTY_FUNCTION__ << " not implemented yet" << std::endl;
     return false;
   }
@@ -74,11 +74,14 @@ class CurveData : public g2o::BaseUnaryEdge<1,               /* dim of residual 
 
     const double& a = params->estimate()(0);
     const double& b = params->estimate()(1);
-    const double& lambda = params->estimate()(2);
+    if (++out % out_rate == 0) {
+      out = 0;
+      std::cout << a << " " << b << std::endl;
+    }
 
-    const double fx = a  * std::exp(-lambda * measurement()(0)) + b;
+    double fx = a * std::exp(measurement()(0)) + b;
 
-    _error(0) = measurement()(0) - fx;
+    _error(0) = measurement()(1) - fx;
   }
 
   void SetData(const cv::Mat& data) {
@@ -86,7 +89,9 @@ class CurveData : public g2o::BaseUnaryEdge<1,               /* dim of residual 
     measurement[0] = data.at<double>(0, 0);
     measurement[1] = data.at<double>(0, 1);
     this->setMeasurement(measurement);
+    this->setInformation(Eigen::Matrix<double, 1, 1>::Identity());
   }
+
 };
 
 }
