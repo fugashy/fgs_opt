@@ -18,6 +18,7 @@ catkin_package(
 )
 
 
+# TODO(fugashy) More smarter
 set(G2O_LIBS
  /usr/local/lib/libg2o_cli.so
  /usr/local/lib/libg2o_core.so
@@ -48,10 +49,6 @@ set(G2O_LIBS
  /usr/local/lib/libg2o_types_slam3d.so
  /usr/local/lib/libg2o_types_slam3d_addons.so
 )
-
-
-message(WARNING "--------------------")
-message(WARNING "--------------------")
 
 
 include_directories(
