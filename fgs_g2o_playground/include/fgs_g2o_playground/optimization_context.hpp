@@ -22,8 +22,8 @@ void CurveFitting(const cv::Mat& cv_data_array) {
   }
 
   CurveParameter* param(new CurveParameter());
-  param->setEstimate(Eigen::Vector2d(1, 1));
-//param->Init(100.0);
+  std::cout << "Before" << std::endl;
+  param->Init(100.0);
   param->ShowParam();
 
   // Cereate optimizer
@@ -45,9 +45,10 @@ void CurveFitting(const cv::Mat& cv_data_array) {
   }
 
   optimizer.initializeOptimization();
-  optimizer.setVerbose(false);
-  optimizer.optimize(10);
+  optimizer.setVerbose(true);
+  optimizer.optimize(1000);
 
+  std::cout << "After" << std::endl;
   param->ShowParam();
 }
 }

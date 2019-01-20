@@ -8,7 +8,7 @@
 namespace fgs {
 namespace g2o_playground {
 
-// y = a * e^(x) + b
+// y = a * x^2 + b
 // parameter: a, b, lambda
 class CurveParameter : public g2o::BaseVertex<2,              /* num of param  */
                                               Eigen::Vector2d /* type of param */> {
@@ -49,8 +49,6 @@ class CurveParameter : public g2o::BaseVertex<2,              /* num of param  *
   }
 };
 
-  static int out = -1;
-  static int out_rate = 50;
 class CurveData : public g2o::BaseUnaryEdge<1,               /* dim of residual */
                                             Eigen::Vector2d, /* type of data    */
                                             CurveParameter   /* type of param   */> {
@@ -74,12 +72,8 @@ class CurveData : public g2o::BaseUnaryEdge<1,               /* dim of residual 
 
     const double& a = params->estimate()(0);
     const double& b = params->estimate()(1);
-    if (++out % out_rate == 0) {
-      out = 0;
-      std::cout << a << " " << b << std::endl;
-    }
 
-    double fx = a * std::exp(measurement()(0)) + b;
+    double fx = a * std::pow(measurement()(0), 2.) + b;
 
     _error(0) = measurement()(1) - fx;
   }
