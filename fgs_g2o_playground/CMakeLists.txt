@@ -57,10 +57,15 @@ include_directories(
   ${EIGEN3_INCLUDE_DIRS}
 )
 
-add_executable(${PROJECT_NAME}_fitting src/${PROJECT_NAME}/fitting.cpp)
-target_link_libraries(${PROJECT_NAME}_fitting
+add_library(${PROJECT_NAME}_optimizer src/${PROJECT_NAME}/optimizer.cpp)
+target_link_libraries(${PROJECT_NAME}_optimizer
   ${catkin_LIBRARIES}
   ${G2O_LIBS}
+)
+
+add_executable(${PROJECT_NAME}_fitting src/${PROJECT_NAME}/fitting.cpp)
+target_link_libraries(${PROJECT_NAME}_fitting
+  ${PROJECT_NAME}_optimizer
 )
 
 install(TARGETS ${PROJECT_NAME}_fitting
