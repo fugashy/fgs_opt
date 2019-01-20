@@ -1,5 +1,5 @@
-#ifndef FGS_G2O_PLAYGROUND_CURVE_HPP_
-#define FGS_G2O_PLAYGROUND_CURVE_HPP_
+#ifndef FGS_G2O_PLAYGROUND_LINE_HPP_
+#define FGS_G2O_PLAYGROUND_LINE_HPP_
 #include "g2o/core/base_unary_edge.h"
 #include "g2o/core/base_vertex.h"
 
@@ -8,14 +8,14 @@
 namespace fgs {
 namespace g2o_playground {
 
-// y = a * x^2 + b
+// y = a * x + b
 // parameter: a, b
-class CurveParameter : public g2o::BaseVertex<2,              /* num of param  */
-                                              Eigen::Vector2d /* type of param */> {
+class LineParameter : public g2o::BaseVertex<2,              /* num of param  */
+                                             Eigen::Vector2d /* type of param */> {
  public:
   EIGEN_MAKE_ALIGNED_OPERATOR_NEW;
 
-  CurveParameter() {}
+  LineParameter() {}
 
   virtual bool read(std::istream&) {
     std::cerr << __PRETTY_FUNCTION__ << " not implemented yet" << std::endl;
@@ -49,13 +49,13 @@ class CurveParameter : public g2o::BaseVertex<2,              /* num of param  *
   }
 };
 
-class CurveData : public g2o::BaseUnaryEdge<1,               /* dim of residual */
-                                            Eigen::Vector2d, /* type of data    */
-                                            CurveParameter   /* type of param   */> {
+class LineData : public g2o::BaseUnaryEdge<1,               /* dim of residual */
+                                           Eigen::Vector2d, /* type of data    */
+                                           LineParameter    /* type of param   */> {
  public:
   EIGEN_MAKE_ALIGNED_OPERATOR_NEW;
 
-   CurveData() {}
+  LineData() {}
 
   virtual bool read(std::istream& is) {
     std::cerr << __PRETTY_FUNCTION__ << " not implemented yet" << std::endl;
@@ -68,12 +68,12 @@ class CurveData : public g2o::BaseUnaryEdge<1,               /* dim of residual 
   }
 
   void computeError() {
-    const CurveParameter* params = static_cast<const CurveParameter*>(vertex(0));
+    const LineParameter* params = static_cast<const LineParameter*>(vertex(0));
 
     const double& a = params->estimate()(0);
     const double& b = params->estimate()(1);
 
-    double fx = a * std::pow(measurement()(0), 2.) + b;
+    double fx = a * measurement()(0) + b;
 
     _error(0) = measurement()(1) - fx;
   }
