@@ -13,10 +13,14 @@ def create(conf_dict):
 
 class Gaussian():
     def __init__(self, sigma):
-        if sigma <= 0:
-            raise Exception('Invalid sigma of gaussian')
+        if type(sigma) is not list:
+            raise Exception('Invalid type of sigma, should be list')
 
-        self.__sigma = sigma
+        is_valid = [ele > -0. for ele in sigma]
+        if False in is_valid:
+            raise Exception('sigma of gaussian should be greater than 0')
+
+        self.__sigma = np.array(sigma)
 
     def convert(self, data):
         return np.random.normal(data, self.__sigma)

@@ -10,7 +10,7 @@ model:
 
 noise_model:
   type: gaussian
-  sigma: 0.1
+  sigma: [0., 0.1]
 
 saver:
   type: cv
