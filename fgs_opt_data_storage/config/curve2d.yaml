@@ -13,3 +13,5 @@ noise_model:
 saver:
   type: cv
   output_path: /tmp/data_curve2d.yaml
+
+plot: False

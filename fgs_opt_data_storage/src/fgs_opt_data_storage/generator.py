@@ -19,4 +19,7 @@ def generate_2d(config_path):
     data = m.create()
     noisy_data = [nm.convert(xy) for xy in data]
     fs.save(noisy_data)
-    plot.model_and_observed(data, noisy_data, ('x', 'f(x)'))
+    if config_dict['plot']:
+        plot.model_and_observed(data, noisy_data, ('x', 'f(x)'))
+
+    print('Data is done !')

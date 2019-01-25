@@ -16,7 +16,7 @@ class Gaussian():
         if type(sigma) is not list:
             raise Exception('Invalid type of sigma, should be list')
 
-        is_valid = [ele > -0. for ele in sigma]
+        is_valid = [ele >= 0. for ele in sigma]
         if False in is_valid:
             raise Exception('sigma of gaussian should be greater than 0')
 

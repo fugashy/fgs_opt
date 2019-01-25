@@ -15,3 +15,5 @@ noise_model:
 saver:
   type: cv
   output_path: /tmp/data_ellipse2d.yaml
+
+plot: False
