@@ -25,6 +25,18 @@ class Randomizer {
     std::mt19937 engine(seed_gen());
     return (*dist)(engine);
   }
+
+  static double GenerateByND(double mean, double stddev) {
+    if (stddev < std::numeric_limits<double>::epsilon()) {
+      std::cerr << " scale is not supported." << std::endl;
+      return 0.0;
+    }
+    std::random_device seed_gen;
+    std::default_random_engine engine(seed_gen());
+
+    std::normal_distribution<> dist(mean, stddev);
+    return dist(engine);
+  }
 };
 }
 }
