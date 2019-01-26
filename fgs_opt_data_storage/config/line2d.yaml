@@ -14,4 +14,4 @@ saver:
   type: cv
   output_path: /tmp/data_line2d.yaml
 
-plot: False
+plot: True
