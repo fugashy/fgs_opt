@@ -11,11 +11,11 @@ namespace ceres_playground {
 template<class ResidualType>
 class ByAutoDiffOptimizationContext {
  public:
-  ByAutoDiffOptimizationContext(const cv::Mat& data_mat) {
+  ByAutoDiffOptimizationContext(const std::vector<cv::Mat>& data_mat) {
     param_.Init(100.0);
 
     typename ResidualType::DataArrayType data_array;
-    ResidualType::DataType::CvToDataArray(data_mat, data_array);
+    ResidualType::DataType::CvToDataArray(data_mat[0], data_array);
     for (auto it = data_array.begin(); it != data_array.end(); ++it) {
       problem_.AddResidualBlock(ResidualType::Create(*it), NULL, &param_[0]);
     }

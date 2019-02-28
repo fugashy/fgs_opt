@@ -20,7 +20,7 @@ int main(int argc, char** argv) {
                  "fgs_ceres_playground_fitting data_path line2d" << std::endl;
     return -1;
   }
-  cv::Mat data = LoadCVYaml(argv[1]);
+  std::vector<cv::Mat> data = LoadCVYaml(argv[1]);
 
   ceres::Solver::Options options;
   options.max_num_iterations = 25;
