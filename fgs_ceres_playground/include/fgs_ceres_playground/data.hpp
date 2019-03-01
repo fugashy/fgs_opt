@@ -76,6 +76,49 @@ struct Point2d : private std::vector<double> {
   using std::vector<double>::operator[];
 };
 
+struct Point3d : private std::vector<double> {
+  Point3d() {
+    this->resize(3);
+    (*this)[0] = (*this)[1] = (*this)[2] = 0.0;
+  }
+  Point3d(double x, double y, double z) {
+    this->resize(3);
+    (*this)[0] = x;
+    (*this)[1] = y;
+    (*this)[2] = z;
+  }
+  ~Point3d() {
+    std::vector<double>().swap(*this);
+  }
+
+  void x(double x) { (*this)[0] = x; }
+  void y(double y) { (*this)[1] = y; }
+  void z(double z) { (*this)[2] = z; }
+
+  double get_x() const { return (*this)[0]; }
+  double get_y() const { return (*this)[1]; }
+  double get_z() const { return (*this)[2]; }
+
+  static void CvToDataArray(
+      const cv::Mat& data_mat, std::vector<Point3d>& data_array) {
+    if (data_mat.empty()) {
+      throw std::runtime_error("data mat is empty");
+    } else if (data_mat.rows == 0 || data_mat.cols != 3) {
+      throw std::runtime_error("data mat size is invalid");
+    }
+    std::vector<Point3d>().swap(data_array);
+    data_array.resize(data_mat.rows);
+    for (int i = 0; i < data_mat.rows; ++i) {
+      Point3d data(data_mat.at<double>(i, 0),
+                   data_mat.at<double>(i, 1),
+                   data_mat.at<double>(i, 2));
+      data_array[i] = data;
+    }
+  }
+
+  using std::vector<double>::operator[];
+};
+
 }
 }
 #endif

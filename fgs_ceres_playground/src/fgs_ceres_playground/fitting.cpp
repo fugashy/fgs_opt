@@ -29,14 +29,17 @@ int main(int argc, char** argv) {
 
   const std::string type(argv[2]);
   if (type == "line2d") {
-    ByAutoDiffOptimizationContext<Line2dResidual> solver(data);
+    ByAutoDiffOptimizationContext<Line2dResidual> solver(data[0]);
     solver.Solve(options);
   } else if (type == "curve2d") {
-    ByAutoDiffOptimizationContext<SimpleCurve2dResidual> solver(data);
+    ByAutoDiffOptimizationContext<SimpleCurve2dResidual> solver(data[0]);
     solver.Solve(options);
   } else if (type == "circle2d") {
-    ByAutoDiffOptimizationContext<Circle2dResidual> solver(data);
+    ByAutoDiffOptimizationContext<Circle2dResidual> solver(data[0]);
     solver.Solve(options);
+  } else {
+    std::cerr << type << " is not implemented" << std::endl;
+    return -1;
   }
 
   return 0;

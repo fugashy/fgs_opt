@@ -33,7 +33,18 @@ target_link_libraries(${PROJECT_NAME}_fitting
   ${CERES_LIBRARIES}
 )
 
-install(TARGETS ${PROJECT_NAME}_fitting
+add_executable(${PROJECT_NAME}_complex_problem
+  src/${PROJECT_NAME}/complex_problem.cpp)
+target_link_libraries(${PROJECT_NAME}_complex_problem
+  ${catkin_LIBRARIES}
+  ${CERES_LIBRARIES}
+)
+
+install(
+  TARGETS
+    ${PROJECT_NAME}_complex_problem
+    ${PROJECT_NAME}_fitting
+    ${PROJECT_NAME}_hello_world
   ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
