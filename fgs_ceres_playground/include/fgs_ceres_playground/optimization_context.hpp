@@ -48,8 +48,10 @@ class BALContext {
       problem_source_(new BundleAdjustmentInTheLarge(cv_storage_path)) {
     for (int i = 0; i < problem_source_->camera_num(); ++i) {
       const cv::Mat data = problem_source_->observation_data(i);
-      double* camera_parameter = problem_source_->camera_parameter(i);
-      double* point = problem_source_->point(i);
+      double* camera_parameter = problem_source_->param_associated_with_obs(
+          i, BundleAdjustmentInTheLarge::Item::Camera);
+      double* point = problem_source_->param_associated_with_obs(
+          i, BundleAdjustmentInTheLarge::Item::Point);
       ceres::CostFunction* cf = ResidualType::Create(data);
       problem_.AddResidualBlock(cf, NULL, camera_parameter, point);
     }

@@ -39,6 +39,12 @@ target_link_libraries(${PROJECT_NAME}_ba_in_the_large
   ${catkin_LIBRARIES}
 )
 
+add_library(${PROJECT_NAME}_viz
+  src/${PROJECT_NAME}/cv_viz.cpp)
+target_link_libraries(${PROJECT_NAME}_viz
+  ${catkin_LIBRARIES}
+)
+
 add_executable(${PROJECT_NAME}_complex_problem
   src/${PROJECT_NAME}/complex_problem.cpp)
 target_link_libraries(${PROJECT_NAME}_complex_problem

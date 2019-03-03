@@ -12,6 +12,11 @@ namespace ceres_playground {
 // 残差ブロック定義時に便利になるようなアクセス方法を提供する
 class BundleAdjustmentInTheLarge {
  public:
+  enum Item {
+    Camera,
+    Point
+  };
+
   explicit BundleAdjustmentInTheLarge(const std::string& cv_storage_path);
 
   // 観測画像点
@@ -23,16 +28,14 @@ class BundleAdjustmentInTheLarge {
     return (cv::Mat_<double>(1, 2) << (*(observation(i))), (*(observation(i) + 1)));
   }
 
-  // 観測画像点に対応したカメラパラメータへのアドレス
-  double* camera_parameter(int obs_index) const {
-    const int camera_index = observations_.at<double>(obs_index, 0);
+  // 観測画像点に対応したカメラパラメータや点へのアドレス
+  double* param_associated_with_obs(int obs_index, const enum Item item) const {
+    const int camera_index = observations_.at<double>(obs_index, item);
     return const_cast<double*>(&(camera_parameters_.at<double>(camera_index, 0)));
   }
-  // 観測画像点に対応した点へのアドレス
-  double* point(int obs_index) const {
-    const int point_index = observations_.at<double>(obs_index, 1);
-    return const_cast<double*>(&(points_.at<double>(point_index, 0)));
-  }
+
+  cv::Mat camera(int i) { return camera_parameters_.row(i); }
+  cv::Mat point(int i) { return points_.row(i); }
 
   int camera_num() const { return camera_parameters_.rows; }
   int observations_num() const { return observations_.rows; }
