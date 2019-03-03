@@ -12,16 +12,16 @@ def create(conf_dict):
                 '{} is not implemented.'.format(conf_dict['type']))
 
 
-def as_cv(file_path, all_data, with_extend=False):
+def as_cv(file_path, all_data):
     file_handle = cv2.FileStorage(file_path, cv2.FileStorage_WRITE)
-    if with_extend:
-        file_handle.write('data', np.array(all_data[0]))
-        index = 0
-        for data in all_data[1:]:
-            file_handle.write('extend_data{}'.format(index), np.array(data))
-            index += 1
-    else:
-        file_handle.write('data', np.array(all_data))
+    file_handle.write('data', np.array(all_data))
+
+
+def save_ba_in_large_as_cv(file_path, all_data):
+    file_handle = cv2.FileStorage(file_path, cv2.FileStorage_WRITE)
+    file_handle.write('observations', np.array(all_data[0]))
+    file_handle.write('camera_parameters', np.array(all_data[1]))
+    file_handle.write('points', np.array(all_data[2]))
 
 
 class SaveAsCV():
@@ -29,4 +29,4 @@ class SaveAsCV():
         self.__output_path = output_path
 
     def save(self, data):
-        as_cv(self.__output_path, data, with_extend=False)
+        as_cv(self.__output_path, data)
