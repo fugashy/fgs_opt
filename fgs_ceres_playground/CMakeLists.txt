@@ -42,7 +42,7 @@ target_link_libraries(${PROJECT_NAME}_ba_in_the_large
 add_executable(${PROJECT_NAME}_complex_problem
   src/${PROJECT_NAME}/complex_problem.cpp)
 target_link_libraries(${PROJECT_NAME}_complex_problem
-  ${catkin_LIBRARIES}
+  ${PROJECT_NAME}_ba_in_the_large
   ${CERES_LIBRARIES}
 )
 

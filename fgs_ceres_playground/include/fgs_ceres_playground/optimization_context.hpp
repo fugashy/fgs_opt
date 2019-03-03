@@ -1,17 +1,20 @@
 #ifndef FGS_CERES_PLAYGROUND_OPTIMIZATION_CONTEXT_HPP_
 #define FGS_CERES_PLAYGROUND_OPTIMIZATION_CONTEXT_HPP_
+#include <memory>
+
 #include <ceres/ceres.h>
 #include <opencv2/core.hpp>
 
 #include "fgs_ceres_playground/data.hpp"
+#include "fgs_ceres_playground/bundle_adjustment_in_the_large.hpp"
 
 namespace fgs {
 namespace ceres_playground {
 
 template<class ResidualType>
-class ByAutoDiffOptimizationContext {
+class FittingContext {
  public:
-  ByAutoDiffOptimizationContext(const cv::Mat& data_mat) {
+  FittingContext(const cv::Mat& data_mat) {
     param_.Init(100.0);
 
     typename ResidualType::DataArrayType data_array;
@@ -39,40 +42,27 @@ class ByAutoDiffOptimizationContext {
 };
 
 template<class ResidualType>
-class ComplexProblemOptimizationContext {
+class BALContext {
  public:
-  ComplexProblemOptimizationContext(const std::vector<cv::Mat>& data_mat) {
-    param_.Init(100.0);
-
-    typename ResidualType::DataTypeArray data_array;
-    typename ResidualType::ExtendDataTypeArray extend_data_array;
-    ResidualType::DataType::CvToDataArray(data_mat[0], data_array);
-    ResidualType::ExtendDataType::CvToDataArray(data_mat[1], extend_data_array);
-    std::cout << "size of data       : " << data_array.size() << std::endl
-              << "size of extend data: " << extend_data_array.size() << std::endl;
-    auto it_data = data_array.begin();
-    auto it_extend_data = extend_data_array.begin();
-    for (; it_data != data_array.end(); ++it_data, ++it_extend_data) {
-      ceres::CostFunction* cf = ResidualType::Create(*it_data);
-      problem_.AddResidualBlock(cf, NULL, &param_[0], &((*it_extend_data)[0]));
+  BALContext(const std::string& cv_storage_path) :
+      problem_source_(new BundleAdjustmentInTheLarge(cv_storage_path)) {
+    for (int i = 0; i < problem_source_->camera_num(); ++i) {
+      const cv::Mat data = problem_source_->observation_data(i);
+      double* camera_parameter = problem_source_->camera_parameter(i);
+      double* point = problem_source_->point(i);
+      ceres::CostFunction* cf = ResidualType::Create(data);
+      problem_.AddResidualBlock(cf, NULL, camera_parameter, point);
     }
   }
 
   void Solve(ceres::Solver::Options& options) {
-    std::cout << "Before" << std::endl;
-    ResidualType::ShowParam(param_);
-
     ceres::Solver::Summary summary;
     ceres::Solve(options, &problem_, &summary);
-
-    std::cout << "After" << std::endl;
-    ResidualType::ShowParam(param_);
   }
 
  private:
-  typename ResidualType::ParameterType param_;
+  std::unique_ptr<BundleAdjustmentInTheLarge> problem_source_;
   ceres::Problem problem_;
-  cv::Mat data_;
 };
 }
 }
