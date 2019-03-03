@@ -33,6 +33,12 @@ target_link_libraries(${PROJECT_NAME}_fitting
   ${CERES_LIBRARIES}
 )
 
+add_library(${PROJECT_NAME}_ba_in_the_large
+  src/${PROJECT_NAME}/bundle_adjustment_in_the_large.cpp)
+target_link_libraries(${PROJECT_NAME}_ba_in_the_large
+  ${catkin_LIBRARIES}
+)
+
 add_executable(${PROJECT_NAME}_complex_problem
   src/${PROJECT_NAME}/complex_problem.cpp)
 target_link_libraries(${PROJECT_NAME}_complex_problem
