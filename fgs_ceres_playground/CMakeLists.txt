@@ -38,37 +38,18 @@ target_link_libraries(${PROJECT_NAME}_fitting
   ${CERES_LIBRARIES}
 )
 
-add_library(${PROJECT_NAME}_ba_in_the_large
-  src/${PROJECT_NAME}/bundle_adjustment_in_the_large.cpp)
-target_link_libraries(${PROJECT_NAME}_ba_in_the_large
-  ${catkin_LIBRARIES}
-)
-
-add_library(${PROJECT_NAME}_viz
-  src/${PROJECT_NAME}/cv_viz.cpp)
-target_link_libraries(${PROJECT_NAME}_viz
+add_executable(${PROJECT_NAME}_bundle_adjustment
+  src/${PROJECT_NAME}/bundle_adjustment_in_the_large.cpp
+  src/${PROJECT_NAME}/cv_viz.cpp
+  src/${PROJECT_NAME}/bundle_adjustment.cpp)
+target_link_libraries(${PROJECT_NAME}_bundle_adjustment
   ${OpenCV_LIBS}
-  ${catkin_LIBRARIES}
-)
-
-add_executable(${PROJECT_NAME}_complex_problem
-  src/${PROJECT_NAME}/complex_problem.cpp)
-target_link_libraries(${PROJECT_NAME}_complex_problem
-  ${PROJECT_NAME}_ba_in_the_large
-  ${PROJECT_NAME}_viz
   ${CERES_LIBRARIES}
-)
-
-add_executable(${PROJECT_NAME}_simple_ba_viz
-  src/${PROJECT_NAME}/simple_ba_viz.cpp)
-target_link_libraries(${PROJECT_NAME}_simple_ba_viz
-  ${CERES_LIBRARIES}
-  ${OpenCV_LIBS}
 )
 
 install(
   TARGETS
-    ${PROJECT_NAME}_complex_problem
+    ${PROJECT_NAME}_bundle_adjustment
     ${PROJECT_NAME}_fitting
     ${PROJECT_NAME}_hello_world
   ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}

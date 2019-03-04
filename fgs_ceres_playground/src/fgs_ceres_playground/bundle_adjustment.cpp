@@ -13,7 +13,7 @@ using fgs::opt_data_storage::LoadCVYaml;
 int main(int argc, char** argv) {
   if (argc != 3) {
     std::cout << "usage: rosrun fgs_ceres_playground "
-                 "fgs_ceres_playground_complex_problam data_path simple_ba" << std::endl;
+                 "fgs_ceres_playground_bundle_adjustment data_path simple_ba" << std::endl;
     return -1;
   }
 
