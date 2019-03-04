@@ -18,9 +18,12 @@ int main(int argc, char** argv) {
     return EXIT_FAILURE;
   }
 
-  cv::Mat data = LoadCVYaml(argv[1]);
+  std::vector<cv::Mat> data = LoadCVYaml(argv[1]);
 
-  std::cout << data << std::endl;
+//for (std::vector<cv::Mat>::const_iterator it = data.begin(); it != data.end(); ++it) {
+//  std::cout << (*it) << std::endl;
+//}
+  std::cout << "data num : " << data.size() << std::endl;
 
   return EXIT_SUCCESS;
 }

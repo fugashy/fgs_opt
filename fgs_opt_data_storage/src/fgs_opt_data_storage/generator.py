@@ -4,6 +4,7 @@ import noise_model
 import saver
 import plot
 
+import numpy as np
 import yaml
 
 
