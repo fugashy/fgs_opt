@@ -11,20 +11,33 @@
 namespace fgs {
 namespace ceres_playground {
 
-template<class ResidualType>
-class FittingContext {
+class OptimizationContext {
  public:
-  FittingContext(const cv::Mat& data_mat) {
+  typedef std::shared_ptr<OptimizationContext> Ptr;
+  virtual void Solve(ceres::Solver::Options& options) = 0;
+};
+
+template<class ResidualType>
+class FittingContext : public OptimizationContext {
+ public:
+  FittingContext(const std::string& cv_storage_path) {
+    cv::FileStorage fs(cv_storage_path, cv::FileStorage::READ);
+    cv::Mat data;
+    fs["data"] >> data;
+    if (data.empty()) {
+      throw std::runtime_error("data is empty");
+    }
+
     param_.Init(100.0);
 
     typename ResidualType::DataArrayType data_array;
-    ResidualType::DataType::CvToDataArray(data_mat, data_array);
+    ResidualType::DataType::CvToDataArray(data, data_array);
     for (auto it = data_array.begin(); it != data_array.end(); ++it) {
       problem_.AddResidualBlock(ResidualType::Create(*it), NULL, &param_[0]);
     }
   }
 
-  void Solve(ceres::Solver::Options& options) {
+  virtual void Solve(ceres::Solver::Options& options) {
     std::cout << "Before" << std::endl;
     ResidualType::ShowParam(param_);
 
@@ -38,11 +51,10 @@ class FittingContext {
  private:
   typename ResidualType::ParameterType param_;
   ceres::Problem problem_;
-  cv::Mat data_;
 };
 
 template<class ResidualType>
-class BALContext {
+class BALContext : public OptimizationContext {
  public:
   BALContext(const std::string& cv_storage_path) :
       problem_source_(new BundleAdjustmentInTheLarge(cv_storage_path)) {
@@ -57,7 +69,7 @@ class BALContext {
     }
   }
 
-  void Solve(ceres::Solver::Options& options) {
+  virtual void Solve(ceres::Solver::Options& options) {
     CVBALVisualizer viz(problem_source_, "BAL");
     viz.AddNoise(0.0, 0.1);
     viz.Show();

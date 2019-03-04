@@ -4,11 +4,11 @@ project(fgs_ceres_playground)
 add_compile_options(-std=c++11)
 
 find_package(catkin REQUIRED COMPONENTS
-  fgs_opt_data_storage
+  roscpp
 )
 
 catkin_package(
-  CATKIN_DEPENDS fgs_opt_data_storage
+  CATKIN_DEPENDS roscpp
 )
 
 find_package(Ceres REQUIRED)
@@ -31,27 +31,27 @@ target_link_libraries(${PROJECT_NAME}_hello_world
   ${CERES_LIBRARIES}
 )
 
-add_executable(${PROJECT_NAME}_fitting
-  src/${PROJECT_NAME}/fitting.cpp)
-target_link_libraries(${PROJECT_NAME}_fitting
-  ${catkin_LIBRARIES}
-  ${CERES_LIBRARIES}
-)
-
-add_executable(${PROJECT_NAME}_bundle_adjustment
+add_library(${PROJECT_NAME}
   src/${PROJECT_NAME}/bundle_adjustment_in_the_large.cpp
   src/${PROJECT_NAME}/cv_viz.cpp
-  src/${PROJECT_NAME}/bundle_adjustment.cpp)
-target_link_libraries(${PROJECT_NAME}_bundle_adjustment
-  ${OpenCV_LIBS}
+  src/${PROJECT_NAME}/optimization_context_factory.cpp)
+target_link_libraries(${PROJECT_NAME}
+  ${catkin_LIBRARIES}
   ${CERES_LIBRARIES}
+  ${OpenCV_LIBS}
+)
+
+add_executable(${PROJECT_NAME}_solve
+  src/${PROJECT_NAME}/solve.cpp)
+target_link_libraries(${PROJECT_NAME}_solve
+  ${PROJECT_NAME}
 )
 
 install(
   TARGETS
-    ${PROJECT_NAME}_bundle_adjustment
-    ${PROJECT_NAME}_fitting
+    ${PROJECT_NAME}
     ${PROJECT_NAME}_hello_world
+    ${PROJECT_NAME}_solve
   ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}

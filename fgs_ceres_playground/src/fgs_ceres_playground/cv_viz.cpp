@@ -2,7 +2,7 @@
 
 #include <string>
 
-#include <opencv2/opencv.hpp>
+#include <opencv2/core.hpp>
 #include <opencv2/viz.hpp>
 
 #include "fgs_ceres_playground/bundle_adjustment_in_the_large.hpp"
