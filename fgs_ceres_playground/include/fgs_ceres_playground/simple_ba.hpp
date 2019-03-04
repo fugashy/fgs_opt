@@ -16,31 +16,31 @@ struct SimpleBAResidual {
 
   template<typename T>
   bool operator() (
-      const T* const parameter, const T* const extend_parameter, T* residual) const {
+      const T* const camera_param, const T* const point, T* residual) const {
     // camera[0,1,2] are the angle-axis rotation.
     T p[3];
-    ceres::AngleAxisRotatePoint(parameter, extend_parameter, p);
+    ceres::AngleAxisRotatePoint(camera_param, point, p);
     // camera[3,4,5] are the translation.
-    p[0] += parameter[3];
-    p[1] += parameter[4];
-    p[2] += parameter[5];
+    p[0] += camera_param[3];
+    p[1] += camera_param[4];
+    p[2] += camera_param[5];
     // Compute the center of distortion. The sign change comes from
     // the camera model that Noah Snavely's Bundler assumes, whereby
     // the camera coordinate system has a negative z axis.
     T xp = -p[0] / p[2];
     T yp = -p[1] / p[2];
     // Apply second and fourth order radial distortion.
-    const T& l1 = parameter[7];
-    const T& l2 = parameter[8];
+    const T& l1 = camera_param[7];
+    const T& l2 = camera_param[8];
     T r2 = xp*xp + yp*yp;
     T distortion = 1.0 + r2  * (l1 + l2  * r2);
     // Compute final projected point position.
-    const T& focal = parameter[6];
+    const T& focal = camera_param[6];
     T predicted_x = focal * distortion * xp;
     T predicted_y = focal * distortion * yp;
     // The error is the difference between the predicted and observed position.
-    residual[0] = predicted_x - T(data_.data[0]);
-    residual[1] = predicted_y - T(data_.data[1]);
+    residual[0] = predicted_x - data_.at<double>(0, 0);
+    residual[1] = predicted_y - data_.at<double>(0, 1);
     return true;
   }
 

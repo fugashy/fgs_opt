@@ -12,10 +12,15 @@ catkin_package(
 )
 
 find_package(Ceres REQUIRED)
+find_package(OpenCV 3.4.1 EXACT REQUIRED
+  PATHS /opt/opencv/3.4.1/share/OpenCV
+  NO_DEFAULT_PATH
+)
 
 include_directories(
   include
   ${catkin_INCLUDE_DIRS}
+  ${OpenCV_INCLUDE_DIRS}
   ${CERES_INCLUDE_DIRS}
 )
 
@@ -42,6 +47,7 @@ target_link_libraries(${PROJECT_NAME}_ba_in_the_large
 add_library(${PROJECT_NAME}_viz
   src/${PROJECT_NAME}/cv_viz.cpp)
 target_link_libraries(${PROJECT_NAME}_viz
+  ${OpenCV_LIBS}
   ${catkin_LIBRARIES}
 )
 
@@ -49,7 +55,15 @@ add_executable(${PROJECT_NAME}_complex_problem
   src/${PROJECT_NAME}/complex_problem.cpp)
 target_link_libraries(${PROJECT_NAME}_complex_problem
   ${PROJECT_NAME}_ba_in_the_large
+  ${PROJECT_NAME}_viz
   ${CERES_LIBRARIES}
+)
+
+add_executable(${PROJECT_NAME}_simple_ba_viz
+  src/${PROJECT_NAME}/simple_ba_viz.cpp)
+target_link_libraries(${PROJECT_NAME}_simple_ba_viz
+  ${CERES_LIBRARIES}
+  ${OpenCV_LIBS}
 )
 
 install(

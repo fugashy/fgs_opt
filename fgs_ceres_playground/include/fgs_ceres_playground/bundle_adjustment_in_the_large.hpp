@@ -13,7 +13,7 @@ namespace ceres_playground {
 class BundleAdjustmentInTheLarge {
  public:
   enum Item {
-    Camera,
+    Camera = 0,
     Point
   };
 
@@ -30,12 +30,16 @@ class BundleAdjustmentInTheLarge {
 
   // 観測画像点に対応したカメラパラメータや点へのアドレス
   double* param_associated_with_obs(int obs_index, const enum Item item) const {
-    const int camera_index = observations_.at<double>(obs_index, item);
-    return const_cast<double*>(&(camera_parameters_.at<double>(camera_index, 0)));
+    const int index = observations_.at<double>(obs_index, static_cast<int>(item));
+    if (item == Item::Camera) {
+      return const_cast<double*>(&(camera_parameters_.at<double>(index, 0)));
+    } else {
+      return const_cast<double*>(&(points_.at<double>(index, 0)));
+    }
   }
 
-  cv::Mat camera(int i) { return camera_parameters_.row(i); }
-  cv::Mat point(int i) { return points_.row(i); }
+  cv::Mat& cameras() { return camera_parameters_; }
+  cv::Mat& points() { return points_; }
 
   int camera_num() const { return camera_parameters_.rows; }
   int observations_num() const { return observations_.rows; }

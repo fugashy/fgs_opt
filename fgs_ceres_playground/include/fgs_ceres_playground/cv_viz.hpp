@@ -16,14 +16,14 @@ class BundleAdjustmentInTheLarge;
 class CVBALVisualizer {
  public:
   CVBALVisualizer(
-      BundleAdjustmentInTheLarge& bal, const std::string& window_name);
+      const std::shared_ptr<BundleAdjustmentInTheLarge>& bal, const std::string& window_name);
   ~CVBALVisualizer();
 
   void AddNoise(double mu, double sigma);
   void Show();
 
  private:
-  BundleAdjustmentInTheLarge& bal_;
+  std::shared_ptr<BundleAdjustmentInTheLarge> bal_;
   std::unique_ptr<cv::viz::Viz3d> window_;
 };
 

@@ -3,8 +3,8 @@
 #include <memory>
 
 #include <ceres/ceres.h>
-#include <opencv2/core.hpp>
 
+#include "fgs_ceres_playground/cv_viz.hpp"
 #include "fgs_ceres_playground/data.hpp"
 #include "fgs_ceres_playground/bundle_adjustment_in_the_large.hpp"
 
@@ -46,7 +46,7 @@ class BALContext {
  public:
   BALContext(const std::string& cv_storage_path) :
       problem_source_(new BundleAdjustmentInTheLarge(cv_storage_path)) {
-    for (int i = 0; i < problem_source_->camera_num(); ++i) {
+    for (int i = 0; i < problem_source_->observations_num(); ++i) {
       const cv::Mat data = problem_source_->observation_data(i);
       double* camera_parameter = problem_source_->param_associated_with_obs(
           i, BundleAdjustmentInTheLarge::Item::Camera);
@@ -58,12 +58,18 @@ class BALContext {
   }
 
   void Solve(ceres::Solver::Options& options) {
+    CVBALVisualizer viz(problem_source_, "BAL");
+    viz.AddNoise(0.0, 0.1);
+    viz.Show();
+
     ceres::Solver::Summary summary;
     ceres::Solve(options, &problem_, &summary);
+
+    viz.Show();
   }
 
  private:
-  std::unique_ptr<BundleAdjustmentInTheLarge> problem_source_;
+  std::shared_ptr<BundleAdjustmentInTheLarge> problem_source_;
   ceres::Problem problem_;
 };
 }
