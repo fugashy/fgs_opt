@@ -14,11 +14,17 @@ My ceres playground.
     rosrun fgs_ceres_playground fgs_ceres_playground_hello_world auto
     ```
 
-- fgs_ceres_playground_fitting
+- fgs_ceres_playground_solve
 
-    Simple fitting samples
+    Simple optimization samples
+
+    - 2d data fitting
+      - line
+      - curve
+      - circle
+
+    - bundle adjustment
 
     ```bash
-    rosrun fgs_opt_data_storage generate_data_2d /path/to/this/pkg/config/curve2d.yaml
-    rosrun fgs_ceres_playground fgs_ceres_playground_fitting /tmp/data_curve2d.yaml curve2d
+    rosrun fgs_ceres_playground fgs_ceres_playground_solve /tmp/data_curve2d.yaml curve2d
     ```
