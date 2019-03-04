@@ -14,4 +14,4 @@ Generate/Load data file for optimization.
     rosrun fgs_opt_data_storage generate_2d PATH_TO_THIS_PACKAGE/config/ellipse2d.yaml
     ```
 
-  ![data_sample](https://github.com/fugashy/fgs_opt/fgs_opt_data_storage/blob/images/ellipse_data.png)
+  ![data_sample](https://github.com/fugashy/fgs_opt/blob/images/ellipse_data.png)

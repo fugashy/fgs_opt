@@ -46,15 +46,18 @@ POSSIBILITY OF SUCH DAMAGE.
 
 - fgs_ceres_playground_solve
 
-    Simple optimization samples
+  Simple optimization samples
 
-    - 2d data fitting
-      - line
-      - curve
-      - circle
+  - 2d data fitting
+    - line
+    - curve
+    - circle
 
-    - bundle adjustment
+  - bundle adjustment
 
-    ```bash
-    rosrun fgs_ceres_playground fgs_ceres_playground_solve /tmp/data_curve2d.yaml curve2d
-    ```
+  ```bash
+  rosrun fgs_ceres_playground fgs_ceres_playground_solve /tmp/cv_ba_in_large.yaml simple_ba
+  ```
+
+  ![ba_before](https://github.com/fugashy/fgs_opt/blob/images/ba_before.png)
+  ![ba_after](https://github.com/fugashy/fgs_opt/blob/images/ba_after.png)
