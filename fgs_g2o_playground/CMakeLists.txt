@@ -4,17 +4,21 @@ project(fgs_g2o_playground)
 add_compile_options(-std=c++11)
 
 find_package(catkin REQUIRED COMPONENTS
-  fgs_opt_data_storage
   roscpp
 )
 
 find_package(Boost REQUIRED COMPONENTS system)
 find_package(Eigen3 REQUIRED)
 
+find_package(OpenCV 3.4.1 EXACT REQUIRED
+  PATHS /opt/opencv/3.4.1/share/OpenCV
+  NO_DEFAULT_PATH
+)
+
 catkin_package(
   INCLUDE_DIRS
   LIBRARIES
-  CATKIN_DEPENDS fgs_opt_data_storage roscpp
+  CATKIN_DEPENDS roscpp
 )
 
 
@@ -55,6 +59,7 @@ include_directories(
   include
   ${catkin_INCLUDE_DIRS}
   ${EIGEN3_INCLUDE_DIRS}
+  ${OpenCV_INCLUDE_DIRS}
 )
 
 add_library(${PROJECT_NAME}_optimizer src/${PROJECT_NAME}/optimizer.cpp)
@@ -66,6 +71,7 @@ target_link_libraries(${PROJECT_NAME}_optimizer
 add_executable(${PROJECT_NAME}_fitting src/${PROJECT_NAME}/fitting.cpp)
 target_link_libraries(${PROJECT_NAME}_fitting
   ${PROJECT_NAME}_optimizer
+  ${OpenCV_LIBS}
 )
 
 install(TARGETS ${PROJECT_NAME}_fitting

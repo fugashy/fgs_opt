@@ -11,69 +11,59 @@
 namespace fgs {
 namespace g2o_playground {
 
-void CurveFitting(const cv::Mat& cv_data_array) {
-  std::vector<CurveData*> data_array;
-  data_array.reserve(cv_data_array.rows);
-  for (int i = 0; i < cv_data_array.rows; ++i) {
-    CurveData* data(new CurveData);
-    data->SetData(cv_data_array.row(i));
-    data_array[i] = data;
+class OptimizationContext {
+ public:
+  virtual void Optimize() = 0;
+};
+
+template<class T>
+class FittingContext : public OptimizationContext {
+ public:
+  explicit FittingContext(const std::string& cv_storage_path) {
+    cv::FileStorage fs(cv_storage_path, cv::FileStorage::READ);
+    cv::Mat data_mat;
+    fs["data"] >> data_mat;
+    if (data_mat.empty()) {
+      throw std::runtime_error("data is empty");
+    }
+
+    data_array_.resize(data_mat.rows);
+
+    for (int i = 0, iend = data_array_.size(); i < iend; ++i) {
+      typename T::DataType* data(new typename T::DataType());
+      data->SetData(data_mat.row(i));
+      data_array_[i] = data;
+    }
   }
 
-  CurveParameter* param(new CurveParameter());
-  std::cout << "Before" << std::endl;
-  param->Init(100.0);
-  param->ShowParam();
+  virtual void Optimize() {
+    typename T::ParameterType* param(new typename T::ParameterType());
 
-  auto optimizer = Optimizer::Create("levenberg");
+    std::cout << "Before" << std::endl;
+    param->Init(100.0);
+    param->ShowParam();
+    param->setId(0);
 
-  param->setId(0);
-  optimizer->addVertex(param);
+    auto optimizer = Optimizer::Create("levenberg");
+    optimizer->addVertex(param);
 
-  for (int i = 0; i < cv_data_array.rows; ++i) {
-    data_array[i]->setVertex(0, param);
-    optimizer->addEdge(data_array[i]);
+    for (int i = 0, iend = data_array_.size(); i < iend; ++i) {
+      data_array_[i]->setVertex(0, param);
+      optimizer->addEdge(data_array_[i]);
+    }
+
+    optimizer->initializeOptimization();
+    optimizer->setVerbose(true);
+    optimizer->optimize(1000);
+
+    std::cout << "After" << std::endl;
+    param->ShowParam();
   }
 
-  optimizer->initializeOptimization();
-  optimizer->setVerbose(true);
-  optimizer->optimize(1000);
+ private:
+  std::vector<typename T::DataType*> data_array_;
+};
 
-  std::cout << "After" << std::endl;
-  param->ShowParam();
-}
-
-void LineFitting(const cv::Mat& cv_data_array) {
-  std::vector<LineData*> data_array;
-  data_array.reserve(cv_data_array.rows);
-  for (int i = 0; i < cv_data_array.rows; ++i) {
-    LineData* data(new LineData);
-    data->SetData(cv_data_array.row(i));
-    data_array[i] = data;
-  }
-
-  LineParameter* param(new LineParameter());
-  std::cout << "Before" << std::endl;
-  param->Init(100.0);
-  param->ShowParam();
-
-  auto optimizer = Optimizer::Create("levenberg");
-
-  param->setId(0);
-  optimizer->addVertex(param);
-
-  for (int i = 0; i < cv_data_array.rows; ++i) {
-    data_array[i]->setVertex(0, param);
-    optimizer->addEdge(data_array[i]);
-  }
-
-  optimizer->initializeOptimization();
-  optimizer->setVerbose(true);
-  optimizer->optimize(1000);
-
-  std::cout << "After" << std::endl;
-  param->ShowParam();
-}
 }
 }
 #endif

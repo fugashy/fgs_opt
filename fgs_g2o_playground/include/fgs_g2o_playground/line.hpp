@@ -88,6 +88,12 @@ class LineData : public g2o::BaseUnaryEdge<1,               /* dim of residual *
 
 };
 
+class Line {
+ public:
+  typedef LineData DataType;
+  typedef LineParameter ParameterType;
+};
+
 }
 }
 #endif

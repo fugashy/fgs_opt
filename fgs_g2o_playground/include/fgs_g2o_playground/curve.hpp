@@ -88,6 +88,12 @@ class CurveData : public g2o::BaseUnaryEdge<1,               /* dim of residual 
 
 };
 
+class Curve {
+ public:
+  typedef CurveData DataType;
+  typedef CurveParameter ParameterType;
+};
+
 }
 }
 #endif
