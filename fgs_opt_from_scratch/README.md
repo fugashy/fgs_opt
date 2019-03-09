@@ -15,7 +15,7 @@
   実装したもの
 
   ```bash
-  rosrun fgs_opt_from_scratch newton_sample
+  rosrun fgs_opt_from_scratch gauss_newton_sample
   ```
 
 - view_taylor
