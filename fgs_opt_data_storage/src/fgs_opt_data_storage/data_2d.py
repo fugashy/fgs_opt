@@ -32,6 +32,13 @@ def create(conf_dict):
         end = conf_dict['end']
         step = conf_dict['step']
         return Line(a, b, start, end, step)
+    elif conf_dict['type'] == 'michaelis_menten':
+        b1 = conf_dict['b1']
+        b2 = conf_dict['b2']
+        start = conf_dict['start']
+        end = conf_dict['end']
+        step = conf_dict['step']
+        return MichaelisMenten(b1, b2, start, end, step)
     else:
         raise NotImplementedError(
                 '{} is not implemented.'.format(conf_dict['type']))
@@ -118,5 +125,21 @@ class Line():
         x_range = np.arange(self.__s, self.__e, self.__st)
 
         f = lambda x: self.__a * x + self.__b
+
+        return [ [x, f(x)] for x in x_range]
+
+
+class MichaelisMenten():
+    def __init__(self, b1, b2, start, end, step):
+        self.__b1 = b1
+        self.__b2 = b2
+        self.__s = start
+        self.__e = end
+        self.__st = step
+
+    def create(self):
+        x_range = np.arange(self.__s, self.__e, self.__st)
+
+        f = lambda x: self.__b1 * x / (self.__b2 + x)
 
         return [ [x, f(x)] for x in x_range]
