@@ -15,7 +15,7 @@
   実装したもの
 
   ```bash
-  ./script/newton_sample
+  rosrun fgs_opt_from_scratch newton_sample
   ```
 
 - view_taylor
@@ -24,7 +24,7 @@
   任意の点は、グラフをクリックしたときのx軸に依る
 
   ```bash
-  ./script/view_taylor
+  rosrun fgs_opt_from_scratch view_taylor _config_path:=/path/to/this/package/config/taylor.yaml
   ```
 
   更新し過ぎるとバグる現象あり
