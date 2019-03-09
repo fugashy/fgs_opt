@@ -1,0 +1,129 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+import numpy as np
+import numpy.linalg as LA
+
+# https://ja.wikipedia.org/wiki/%E3%82%AC%E3%82%A6%E3%82%B9%E3%83%BB%E3%83%8B%E3%83%A5%E3%83%BC%E3%83%88%E3%83%B3%E6%B3%95#%E4%BE%8B
+class MichaelisMentenEquation:
+    def __init__(self):
+        self.__b = [0., 0.]
+        # v(s) = b0s/(b2 + s)
+        self.__v = lambda s, b: b[0]*s / (b[1] + s)
+        # 残差
+        self.__r = lambda x, b: x[1] - self.__v(x[0], b)
+        # 残差のヤコビアン要素
+        self.__dfdb0 = lambda s, b: -s / (b[1] + s)
+        self.__dfdb1 = lambda s, b: b[0]*s / (b[1] + s)**2
+
+    def update(self, b):
+        u"""
+        パラメータを更新する
+
+        Args:
+            b: ミカエリス・メンテン式のパラメータ(list)
+
+        Returns:
+            なし
+        """
+        if len(b) != self.dof():
+            print('Invalid dof. We ignore this updation.')
+            return
+
+        self.__b = b
+
+    def dof(self):
+        u"""
+        パラメータの自由度
+
+        Args:
+            なし
+
+        Returns:
+            2
+        """
+        return len(self.__b)
+
+    def residual(self, x):
+        u"""
+        入力データに対する残差を計算する
+
+        Args:
+            データ(list)
+
+        Returns:
+            残差(float)
+        """
+        return self.__r(x, self.__b)
+
+    def jacobian(self, x):
+        u"""
+        入力データに対するヤコビ行列の要素を返す
+
+        Args:
+            データ(list)
+
+        Retuns:
+            ヤコビ要素(list)
+        """
+        return [self.__dfdb0(x[0], self.__b), self.__dfdb1(x[0], self.__b)]
+
+
+if __name__ == '__main__':
+    s_list = [0.038, 0.194, 0.425, 0.626, 1.253, 2.5, 3.74]
+    v_list = [0.05, 0.127, 0.094, 0.2122, 0.2729, 0.2665, 0.3317]
+
+    target = MichaelisMentenEquation()
+
+
+    # モデルパラメータの初期値
+    param = np.array([0.9, 0.2])
+    target.update(param)
+
+    # 初期の残差平方和
+    init_residual = 0;
+    for i in range(len(s_list)):
+        init_residual += target.residual([s_list[i], v_list[i]])**2
+
+    print('start optimization --------------------------')
+    print('param    : {}'.format(param))
+    print('residual : {}'.format(init_residual))
+
+    # 最適化
+    num_iteration = 0
+    while True:
+        # ヤコビアン(パラメータ数 x パラメータ自由度)
+        J = np.zeros((len(s_list), target.dof()))
+        for i in range(len(s_list)):
+            J[i] = target.jacobian([s_list[i], v_list[i]])
+        JInv = LA.pinv(J)
+
+        # 残差ベクトル
+        R = np.array([target.residual(
+            [s_list[i], v_list[i]]) for i in range(len(s_list))]).T
+
+        # 更新ベクトル
+        delta = np.dot(JInv, R).tolist()
+
+        # 更新量が十分小さくなったら終了
+        delta_norm = LA.norm(delta, ord=2)
+        if delta_norm < 0.00001:
+            break
+
+        # 更新
+        param -= delta
+        target.update(param)
+
+        if num_iteration == 5:
+            break
+
+        num_iteration += 1
+
+    # 最終的な残差平方和
+    residual = 0;
+    for i in range(len(s_list)):
+        residual += target.residual([s_list[i], v_list[i]])**2
+
+    print('end optimization ----------------------------')
+    print('iteration: {}'.format(num_iteration))
+    print('param    : {}'.format(param))
+    print('residual : {}'.format(residual))
