@@ -5,7 +5,7 @@ import numpy as np
 import yaml
 import rospy
 
-from fgs_opt_from_scratch import functions
+from fgs_opt_from_scratch import taylor_functions as functions
 import matplotlib.pylab as plt
 
 x_array = []
