@@ -2,9 +2,9 @@ model:
   type: line
   a: 2.
   b: 5.
-  start: -10.
-  end: 10.
-  step: 0.2
+  start: -50.
+  end: 50.
+  step: 0.5
 
 noise_model:
   type: gaussian

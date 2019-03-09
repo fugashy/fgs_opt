@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 
 def create(config_dict):
-    if config_dict['type'] == 'MichaelisMentenEquation':
+    if config_dict['type'] == 'michaelis_menten':
         return MichaelisMentenEquation()
+    elif config_dict['type'] == 'line2d':
+        return Line2d()
     else:
         raise NotImplementedError(
             'type {] is not implemented'.format(config_dict['type']))
@@ -70,3 +72,28 @@ class MichaelisMentenEquation:
             ヤコビ要素(list)
         """
         return [self.__dfdb0(x[0], self.__b), self.__dfdb1(x[0], self.__b)]
+
+
+class Line2d:
+    def __init__(self):
+        self.__p = [0., 0.]
+        self.__f = lambda x, p: p[0]*x + p[1]
+        self.__r = lambda xy, p: xy[1] - self.__f(xy[0], p)
+        self.__dfda = lambda x, p: -x[0]
+        self.__dfdb = lambda x, p: -1.0
+
+    def update(self, p):
+        if len(p) != 2:
+            print('Invalid dof. We ignore this updation.')
+            return
+
+        self.__p = p
+
+    def get_param(self):
+        return self.__p
+
+    def residual(self, x):
+        return self.__r(x, self.__p)
+
+    def jacobian(self, x):
+        return [self.__dfda(x, self.__p), self.__dfdb(x, self.__p)]

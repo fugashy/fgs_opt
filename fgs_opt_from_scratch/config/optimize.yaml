@@ -1,0 +1,8 @@
+model:
+  type: line2d
+
+init_param: [5., 2.]
+
+optimizer:
+  type: gauss_newton
+  threshold: 0.0001
