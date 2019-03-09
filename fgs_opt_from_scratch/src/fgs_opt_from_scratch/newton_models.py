@@ -29,23 +29,23 @@ class MichaelisMentenEquation:
         Returns:
             なし
         """
-        if len(b) != self.dof():
+        if len(b) != 2:
             print('Invalid dof. We ignore this updation.')
             return
 
         self.__b = b
 
-    def dof(self):
+    def get_param(self):
         u"""
-        パラメータの自由度
+        パラメータを得る
 
         Args:
             なし
 
         Returns:
-            2
+            パラメータ(list)
         """
-        return len(self.__b)
+        return self.__b
 
     def residual(self, x):
         u"""
@@ -66,9 +66,7 @@ class MichaelisMentenEquation:
         Args:
             データ(list)
 
-        Retuns:
+        Returns:
             ヤコビ要素(list)
         """
         return [self.__dfdb0(x[0], self.__b), self.__dfdb1(x[0], self.__b)]
-
-

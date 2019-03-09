@@ -1,62 +1,28 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from fgs_opt_from_scratch import newton_models
-
-import numpy as np
-import numpy.linalg as LA
+from fgs_opt_from_scratch import (
+        newton_models, optimizer)
 
 if __name__ == '__main__':
-    s_list = [0.038, 0.194, 0.425, 0.626, 1.253, 2.5, 3.74]
-    v_list = [0.05, 0.127, 0.094, 0.2122, 0.2729, 0.2665, 0.3317]
+    data = [[0.038, 0.05],
+            [0.194, 0.127],
+            [0.425, 0.094],
+            [0.626, 0.2122],
+            [1.253, 0.2729],
+            [2.5, 0.2665],
+            [3.74, 0.3317]]
 
     target = newton_models.MichaelisMentenEquation()
+    target.update([0.9, 0.2])
 
-    # モデルパラメータの初期値
-    param = np.array([0.9, 0.2])
-    target.update(param)
+    newton = optimizer.Newton(target, data)
 
-    # 初期の残差平方和
-    init_residual = 0;
-    for i in range(len(s_list)):
-        init_residual += target.residual([s_list[i], v_list[i]])**2
+    print('initial param   : {}'.format(target.get_param()))
+    print('initial residual: {}'.format(newton.residual()))
 
-    print('start optimization --------------------------')
-    print('param    : {}'.format(param))
-    print('residual : {}'.format(init_residual))
+    print('optimize...')
+    num_iteration = newton.optimize()
 
-    # 最適化
-    num_iteration = 0
-    while True:
-        # ヤコビアン(パラメータ数 x パラメータ自由度)
-        J = np.zeros((len(s_list), target.dof()))
-        for i in range(len(s_list)):
-            J[i] = target.jacobian([s_list[i], v_list[i]])
-        JInv = LA.pinv(J)
-
-        # 残差ベクトル
-        R = np.array([target.residual(
-            [s_list[i], v_list[i]]) for i in range(len(s_list))]).T
-
-        # 更新ベクトル
-        delta = np.dot(JInv, R).tolist()
-
-        # 更新量が十分小さくなったら終了
-        delta_norm = LA.norm(delta, ord=2)
-        if delta_norm < 0.00001:
-            break
-
-        # 更新
-        param -= delta
-        target.update(param)
-
-        num_iteration += 1
-
-    # 最終的な残差平方和
-    residual = 0;
-    for i in range(len(s_list)):
-        residual += target.residual([s_list[i], v_list[i]])**2
-
-    print('end optimization ----------------------------')
-    print('iteration: {}'.format(num_iteration))
-    print('param    : {}'.format(param))
-    print('residual : {}'.format(residual))
+    print('num of iteration: {}'.format(num_iteration))
+    print('final param     : {}'.format(target.get_param()))
+    print('final residual  : {}'.format(newton.residual()))
