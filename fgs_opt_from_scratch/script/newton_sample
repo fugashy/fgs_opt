@@ -113,9 +113,6 @@ if __name__ == '__main__':
         param -= delta
         target.update(param)
 
-        if num_iteration == 5:
-            break
-
         num_iteration += 1
 
     # 最終的な残差平方和
