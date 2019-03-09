@@ -8,14 +8,12 @@
 
 # 実行可能ファイル
 
-- newton_sample
+- optimize
 
-  wikipediaのガウス・ニュートン法の例に上がっているミカエリス・メンテン式のパラメータ推定を
-
-  実装したもの
+  設定ファイルにしたがってモデルパラメータの推定を行う
 
   ```bash
-  rosrun fgs_opt_from_scratch gauss_newton_sample
+  rosrun fgs_opt_from_scratch optimize config_path data_path
   ```
 
 - view_taylor
