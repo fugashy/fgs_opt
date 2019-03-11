@@ -10,7 +10,6 @@ def create(config_dict):
     else:
         raise NotImplementedError(
                 '{} is not implemented'.format(config_dict['type']))
-    return 
 
 class GaussNewton:
     def __init__(self, threshold):
