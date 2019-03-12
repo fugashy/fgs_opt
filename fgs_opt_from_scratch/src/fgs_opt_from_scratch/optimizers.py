@@ -1,40 +1,47 @@
 # -*- coding: utf-8 -*-
-
+from abc import ABCMeta, abstractmethod
 import numpy as np
 import numpy.linalg as LA
 
-def create(config_dict):
+def create(target, data, config_dict):
     if config_dict['type'] == 'gauss_newton':
         threshold = config_dict['threshold']
-        return GaussNewton(threshold)
+        return GaussNewton(target, data, threshold)
     else:
         raise NotImplementedError(
                 '{} is not implemented'.format(config_dict['type']))
 
-class GaussNewton:
-    def __init__(self, threshold):
-        self.__threshold = threshold
-        self.__data = None
-        self.__target = None
+class Optimizer():
+    __metaclass__ = ABCMeta
 
-    def register(self, target, data):
-        self.__target = target
-        self.__data = data
+    def __init__(self, target, data):
+        self.data = data
+        self.target = target
 
     def residual(self):
-        if self.__data is None or self.__target is None:
+        if self.data is None or self.target is None:
             print('Data or Model are empty')
             return 0
 
         # 残差平方和
         residual = 0;
-        for i in range(len(self.__data)):
-            residual += self.__target.residual(self.__data[i])**2
+        for i in range(len(self.data)):
+            residual += self.target.residual(self.data[i])**2
 
         return residual
 
+    @abstractmethod
     def optimize(self):
-        if self.__data is None or self.__target is None:
+        raise NotImplementedError()
+
+
+class GaussNewton(Optimizer):
+    def __init__(self, target, data, threshold):
+        super(GaussNewton, self).__init__(target, data)
+        self.__threshold = threshold
+
+    def optimize(self):
+        if self.data is None or self.target is None:
             print('Data or Model are empty')
             return 0
 
@@ -43,17 +50,17 @@ class GaussNewton:
         try:
             while True:
                 # ヤコビアン(パラメータ数 x パラメータ自由度)
-                J = np.zeros((len(self.__data), len(self.__target.get_param())))
-                for i in range(len(self.__data)):
-                    J[i] = self.__target.gradient(self.__data[i])
+                J = np.zeros((len(self.data), len(self.target.get_param())))
+                for i in range(len(self.data)):
+                    J[i] = self.target.gradient(self.data[i])
 
                 # 近似されたヘッセ行列の一般逆行列
                 AH = np.dot(J.T, J)
                 AHInv = LA.pinv(AH)
 
                 # 残差ベクトル
-                R = np.array([self.__target.residual(
-                    self.__data[i]) for i in range(len(self.__data))]).T
+                R = np.array([self.target.residual(
+                    self.data[i]) for i in range(len(self.data))]).T
 
                 # 更新ベクトル
                 delta = np.dot(np.dot(AHInv, J.T), R).tolist()
@@ -64,9 +71,9 @@ class GaussNewton:
                     break
 
                 # 更新
-                param = np.array(self.__target.get_param())
+                param = np.array(self.target.get_param())
                 param -= delta
-                self.__target.update(param)
+                self.target.update(param)
 
                 num_iteration += 1
         except KeyboardInterrupt:

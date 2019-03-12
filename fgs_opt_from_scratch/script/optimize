@@ -20,8 +20,7 @@ if __name__ == '__main__':
     model = models.create(config_dict['model'])
     model.update(config_dict['init_param'])
 
-    optimizer = optimizers.create(config_dict['optimizer'])
-    optimizer.register(model, data)
+    optimizer = optimizers.create(model, data, config_dict['optimizer'])
 
     print('initial param   : {}'.format(model.get_param()))
     print('initial residual: {}'.format(optimizer.residual()))
