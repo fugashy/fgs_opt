@@ -40,33 +40,36 @@ class GaussNewton:
 
         # 最適化
         num_iteration = 0
-        while True:
-            # ヤコビアン(パラメータ数 x パラメータ自由度)
-            J = np.zeros((len(self.__data), len(self.__target.get_param())))
-            for i in range(len(self.__data)):
-                J[i] = self.__target.jacobian(self.__data[i])
+        try:
+            while True:
+                # ヤコビアン(パラメータ数 x パラメータ自由度)
+                J = np.zeros((len(self.__data), len(self.__target.get_param())))
+                for i in range(len(self.__data)):
+                    J[i] = self.__target.jacobian(self.__data[i])
 
-            # 近似されたヘッセ行列の一般逆行列
-            AH = np.dot(J.T, J)
-            AHInv = LA.pinv(AH)
+                # 近似されたヘッセ行列の一般逆行列
+                AH = np.dot(J.T, J)
+                AHInv = LA.pinv(AH)
 
-            # 残差ベクトル
-            R = np.array([self.__target.residual(
-                self.__data[i]) for i in range(len(self.__data))]).T
+                # 残差ベクトル
+                R = np.array([self.__target.residual(
+                    self.__data[i]) for i in range(len(self.__data))]).T
 
-            # 更新ベクトル
-            delta = np.dot(np.dot(AHInv, J.T), R).tolist()
+                # 更新ベクトル
+                delta = np.dot(np.dot(AHInv, J.T), R).tolist()
 
-            # 更新量が十分小さくなったら終了
-            delta_norm = LA.norm(delta, ord=2)
-            if delta_norm < self.__threshold:
-                break
+                # 更新量が十分小さくなったら終了
+                delta_norm = LA.norm(delta, ord=2)
+                if delta_norm < self.__threshold:
+                    break
 
-            # 更新
-            param = np.array(self.__target.get_param())
-            param -= delta
-            self.__target.update(param)
+                # 更新
+                param = np.array(self.__target.get_param())
+                param -= delta
+                self.__target.update(param)
 
-            num_iteration += 1
-
-        return num_iteration
+                num_iteration += 1
+        except KeyboardInterrupt:
+            print('user interruption has occured')
+        finally:
+            return num_iteration

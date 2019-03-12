@@ -27,11 +27,7 @@ if __name__ == '__main__':
     print('initial residual: {}'.format(optimizer.residual()))
 
     print('optimize...')
-    try:
-        num_iteration = optimizer.optimize()
-    except KeyboardInterrupt:
-        num_iteration = 0
-        print('catch user interruption')
+    num_iteration = optimizer.optimize()
 
     print('num of iteration: {}'.format(num_iteration))
     print('final param     : {}'.format(model.get_param()))
