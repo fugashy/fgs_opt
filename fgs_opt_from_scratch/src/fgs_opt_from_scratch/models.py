@@ -17,7 +17,7 @@ class MichaelisMentenEquation:
         self.__v = lambda s, b: b[0]*s / (b[1] + s)
         # 残差
         self.__r = lambda x, b: x[1] - self.__v(x[0], b)
-        # 残差のヤコビアン要素
+        # 残差の勾配
         self.__dfdb0 = lambda s, b: -s / (b[1] + s)
         self.__dfdb1 = lambda s, b: b[0]*s / (b[1] + s)**2
 
@@ -61,15 +61,15 @@ class MichaelisMentenEquation:
         """
         return self.__r(x, self.__b)
 
-    def jacobian(self, x):
+    def gradient(self, x):
         u"""
-        入力データに対するヤコビ行列の要素を返す
+        入力データに対する勾配ベクトルを返す
 
         Args:
             データ(list)
 
         Returns:
-            ヤコビ要素(list)
+            勾配ベクトル(list)
         """
         return [self.__dfdb0(x[0], self.__b), self.__dfdb1(x[0], self.__b)]
 
@@ -95,5 +95,5 @@ class Line2d:
     def residual(self, x):
         return self.__r(x, self.__p)
 
-    def jacobian(self, x):
+    def gradient(self, x):
         return [self.__dfda(x, self.__p), self.__dfdb(x, self.__p)]

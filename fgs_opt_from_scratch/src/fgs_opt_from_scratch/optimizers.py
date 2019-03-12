@@ -45,7 +45,7 @@ class GaussNewton:
                 # ヤコビアン(パラメータ数 x パラメータ自由度)
                 J = np.zeros((len(self.__data), len(self.__target.get_param())))
                 for i in range(len(self.__data)):
-                    J[i] = self.__target.jacobian(self.__data[i])
+                    J[i] = self.__target.gradient(self.__data[i])
 
                 # 近似されたヘッセ行列の一般逆行列
                 AH = np.dot(J.T, J)
