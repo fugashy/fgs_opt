@@ -45,14 +45,17 @@ class GaussNewton:
             J = np.zeros((len(self.__data), len(self.__target.get_param())))
             for i in range(len(self.__data)):
                 J[i] = self.__target.jacobian(self.__data[i])
-            JInv = LA.pinv(J)
+
+            # 近似されたヘッセ行列の一般逆行列
+            AH = np.dot(J.T, J)
+            AHInv = LA.pinv(AH)
 
             # 残差ベクトル
             R = np.array([self.__target.residual(
                 self.__data[i]) for i in range(len(self.__data))]).T
 
             # 更新ベクトル
-            delta = np.dot(JInv, R).tolist()
+            delta = np.dot(np.dot(AHInv, J.T), R).tolist()
 
             # 更新量が十分小さくなったら終了
             delta_norm = LA.norm(delta, ord=2)
