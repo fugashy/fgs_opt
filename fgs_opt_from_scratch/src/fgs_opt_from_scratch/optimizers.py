@@ -1,82 +1,66 @@
 # -*- coding: utf-8 -*-
-from abc import ABCMeta, abstractmethod
 import numpy as np
 import numpy.linalg as LA
 
-def create(target, data, config_dict):
-    if config_dict['type'] == 'gauss_newton':
-        threshold = config_dict['threshold']
-        return GaussNewton(target, data, threshold)
-    else:
-        raise NotImplementedError(
-                '{} is not implemented'.format(config_dict['type']))
+def create(model, data, update_func, config_dict):
+    tolerance = config_dict['tolerance']
+    return Optimizer(model, data, update_func, tolerance)
 
 class Optimizer():
-    __metaclass__ = ABCMeta
+    def __init__(self, model, data, update_func, tolerance):
+        u"""
+        コンストラクタ
+        Args:
+            model: データが従っているとされるモデル(models)
+            data: 観測データ(numpy.array)
+            update_func: パラメータを更新する関数(update_functions)
+        Returns:
+            なし
+        """
+        self.__model = model
+        self.__data = data
+        self.__update_func = update_func
+        self.__tolerance = tolerance
+        self.__num_iteration = 0
 
-    def __init__(self, target, data):
-        self.data = data
-        self.target = target
+    def ess(self):
+        u"""
+        残差平方和(Error of sum squares)を計算する
+        """
+        ess = 0;
+        for i in range(len(self.__data)):
+            ess += self.__model.residual(self.__data[i])**2
 
-    def residual(self):
-        if self.data is None or self.target is None:
-            print('Data or Model are empty')
-            return 0
+        return ess
 
-        # 残差平方和
-        residual = 0;
-        for i in range(len(self.data)):
-            residual += self.target.residual(self.data[i])**2
+    def optimize(self, once=False):
+        u"""
+        更新ベクトルのノルムが一定値になるまでパラメータの更新を行う
 
-        return residual
+        Args:
+            once: 一度で止める(bool)
 
-    @abstractmethod
-    def optimize(self):
-        raise NotImplementedError()
-
-
-class GaussNewton(Optimizer):
-    def __init__(self, target, data, threshold):
-        super(GaussNewton, self).__init__(target, data)
-        self.__threshold = threshold
-
-    def optimize(self):
-        if self.data is None or self.target is None:
-            print('Data or Model are empty')
-            return 0
-
-        # 最適化
-        num_iteration = 0
+        Returns:
+            更新回数(int)
+        """
         try:
             while True:
-                # ヤコビアン(パラメータ数 x パラメータ自由度)
-                J = np.zeros((len(self.data), len(self.target.get_param())))
-                for i in range(len(self.data)):
-                    J[i] = self.target.gradient(self.data[i])
-
-                # 近似されたヘッセ行列の一般逆行列
-                AH = np.dot(J.T, J)
-                AHInv = LA.pinv(AH)
-
-                # 残差ベクトル
-                R = np.array([self.target.residual(
-                    self.data[i]) for i in range(len(self.data))]).T
-
-                # 更新ベクトル
-                delta = np.dot(np.dot(AHInv, J.T), R).tolist()
+                delta = self.__update_func(self.__model, self.__data)
 
                 # 更新量が十分小さくなったら終了
                 delta_norm = LA.norm(delta, ord=2)
-                if delta_norm < self.__threshold:
+                if delta_norm < self.__tolerance:
+                    break
+                elif once:
                     break
 
                 # 更新
-                param = np.array(self.target.get_param())
+                param = np.array(self.__model.get_param())
                 param -= delta
-                self.target.update(param)
+                self.__model.update(param)
 
-                num_iteration += 1
+                self.__num_iteration += 1
         except KeyboardInterrupt:
             print('user interruption has occured')
         finally:
-            return num_iteration
+            return self.__num_iteration

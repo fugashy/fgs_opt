@@ -3,6 +3,8 @@ model:
 
 init_param: [5., 2.]
 
-optimizer:
+update_functions:
   type: gauss_newton
-  threshold: 0.0001
+
+optimizer:
+  tolerance: 0.0001

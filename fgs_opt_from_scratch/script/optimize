@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 import cv2
 from fgs_opt_from_scratch import (
-        models, optimizers)
+        models, optimizers, update_functions)
 import yaml
 from sys import exit, argv
 
@@ -14,20 +14,25 @@ if __name__ == '__main__':
     with open(argv[1], 'r') as f:
         config_dict = yaml.load(f)
 
+    # データ
     cv_yaml = cv2.FileStorage(argv[2], cv2.FileStorage_READ)
     data = cv_yaml.getNode('data').mat()
 
+    # モデル
     model = models.create(config_dict['model'])
     model.update(config_dict['init_param'])
 
-    optimizer = optimizers.create(model, data, config_dict['optimizer'])
+    # パラメータ更新関数
+    update_func = update_functions.create(config_dict['update_functions'])
 
-    print('initial param   : {}'.format(model.get_param()))
-    print('initial residual: {}'.format(optimizer.residual()))
+    optimizer = optimizers.create(model, data, update_func, config_dict['optimizer'])
+
+    print('initial param               : {}'.format(model.get_param()))
+    print('initial error of sum squares: {}'.format(optimizer.ess()))
 
     print('optimize...')
     num_iteration = optimizer.optimize()
 
-    print('num of iteration: {}'.format(num_iteration))
-    print('final param     : {}'.format(model.get_param()))
-    print('final residual  : {}'.format(optimizer.residual()))
+    print('num of iteration          : {}'.format(num_iteration))
+    print('final param               : {}'.format(model.get_param()))
+    print('final error of sum squares: {}'.format(optimizer.ess()))
