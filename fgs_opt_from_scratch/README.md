@@ -22,7 +22,5 @@
   任意の点は、グラフをクリックしたときのx軸に依る
 
   ```bash
-  rosrun fgs_opt_from_scratch view_taylor _config_path:=/path/to/this/package/config/taylor.yaml
+  rosrun fgs_opt_from_scratch view_taylor /path/to/this/package/config/taylor.yaml
   ```
-
-  更新し過ぎるとバグる現象あり
