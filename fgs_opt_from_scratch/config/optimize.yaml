@@ -1,8 +1,9 @@
 model:
   type: michaelis_menten
+# type: circle2d
 # type: line2d
 
-init_param: [20., 50.]
+init_param: [10., 10.]
 
 updater:
 # type: gauss_newton

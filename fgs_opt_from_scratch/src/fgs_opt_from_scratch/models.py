@@ -5,6 +5,8 @@ def create(config_dict):
         return MichaelisMentenEquation()
     elif config_dict['type'] == 'line2d':
         return Line2d()
+    elif config_dict['type'] == 'circle2d':
+        return Circle2d()
     else:
         raise NotImplementedError(
             'type {] is not implemented'.format(config_dict['type']))
@@ -97,3 +99,31 @@ class Line2d:
 
     def gradient(self, x):
         return [self.__dfda(x, self.__p), self.__dfdb(x, self.__p)]
+
+
+class Circle2d:
+    def __init__(self):
+        # x, y, r
+        self.__p = [0., 0., 0.]
+        self.__f = lambda x, p: (x[0] - p[0])**2 + (x[1] - p[1])**2
+        self.__r = lambda x, p: p[2]**2 - self.__f(x, p)
+
+        self.__drdx = lambda x, p: 2. * (x[0] - p[0])
+        self.__drdy = lambda x, p: 2. * (x[1] - p[1])
+        self.__drdr = lambda x, p: 2. * p[2]
+
+    def update(self, p):
+        if len(p) != 3:
+            print('Invalid dof. We ignore this updation.')
+            return
+
+        self.__p = p
+
+    def get_param(self):
+        return self.__p
+
+    def residual(self, x):
+        return self.__r(x, self.__p)
+
+    def gradient(self, x):
+        return [self.__drdx(x, self.__p), self.__drdy(x, self.__p), self.__drdr(x, self.__p)]
