@@ -2,24 +2,26 @@
 import numpy as np
 import numpy.linalg as LA
 
-def create(model, data, update_func, config_dict):
+def create(model, data, updater, config_dict):
     tolerance = config_dict['tolerance']
-    return Optimizer(model, data, update_func, tolerance)
+    return Optimizer(model, data, updater, tolerance)
+
 
 class Optimizer():
-    def __init__(self, model, data, update_func, tolerance):
+    def __init__(self, model, data, updater, tolerance):
         u"""
         コンストラクタ
         Args:
             model: データが従っているとされるモデル(models)
             data: 観測データ(numpy.array)
             update_func: パラメータを更新する関数(update_functions)
+            tolerance: 最適化が完了したと判断するしきい値(float)
         Returns:
             なし
         """
         self.__model = model
         self.__data = data
-        self.__update_func = update_func
+        self.__updater = updater
         self.__tolerance = tolerance
         self.__num_iteration = 0
 
@@ -45,7 +47,7 @@ class Optimizer():
         """
         try:
             while True:
-                delta = self.__update_func(self.__model, self.__data)
+                delta = self.__updater.update(self.__model, self.__data)
 
                 # 更新量が十分小さくなったら終了
                 delta_norm = LA.norm(delta, ord=2)

@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 import cv2
 from fgs_opt_from_scratch import (
-        models, optimizers, update_functions)
+        models, optimizers, updaters)
 import yaml
 from sys import exit, argv
 
@@ -23,7 +23,7 @@ if __name__ == '__main__':
     model.update(config_dict['init_param'])
 
     # パラメータ更新関数
-    update_func = update_functions.create(config_dict['update_functions'])
+    update_func = updaters.create(config_dict['updater'])
 
     optimizer = optimizers.create(model, data, update_func, config_dict['optimizer'])
 

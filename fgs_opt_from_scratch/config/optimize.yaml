@@ -3,7 +3,7 @@ model:
 
 init_param: [5., 2.]
 
-update_functions:
+updater:
   type: gauss_newton
 
 optimizer:
