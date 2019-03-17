@@ -64,7 +64,7 @@ class LevenbergMarquardt():
 
     def update(self, model, data):
         u"""
-        最急降下法法でパラメータを更新する
+        レーベンバーグマーカート法でパラメータを更新する
         Args:
             model: データが従っているとされるモデル(modelsモジュール)
             data: 観測データ(numpy.array)
@@ -75,7 +75,6 @@ class LevenbergMarquardt():
         J = np.zeros((len(data), len(model.get_param())))
         for i in range(len(data)):
             J[i] = model.gradient(data[i])
-
 
         # 近似されたヘッセ行列(J.TとJの内積)
         AH = np.dot(J.T, J)
