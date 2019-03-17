@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 import cv2
 from fgs_opt_from_scratch import (
-        models, optimizers, updaters)
+        models, optimizers, updaters, plotters)
 import yaml
 from sys import exit, argv
 
@@ -22,17 +22,47 @@ if __name__ == '__main__':
     model = models.create(config_dict['model'])
     model.update(config_dict['init_param'])
 
-    # パラメータ更新関数
-    update_func = updaters.create(config_dict['updater'])
+    # パラメータ更新器
+    updater = updaters.create(config_dict['updater'])
 
-    optimizer = optimizers.create(model, data, update_func, config_dict['optimizer'])
+    # 最適化処理クラス
+    optimizer = optimizers.create(model, data, updater, config_dict['optimizer'])
+
+    # 描画クラス(optional)
+    plotter = None
+    if 'plotter' in config_dict and config_dict['plotter']:
+        plotter = plotters.create(config_dict['plotter'], model, data)
+
+    # 1周期毎に停止(optional)
+    once = False
+    if 'once' in config_dict and config_dict['once']:
+        once = config_dict['once']
 
     print('initial param               : {}'.format(model.get_param()))
     print('initial error of sum squares: {}'.format(optimizer.ess()))
 
     print('optimize...')
-    num_iteration = optimizer.optimize()
+
+    previous_num = 0
+    num_iteration = 0
+    while True:
+        if plotter:
+            plotter.plot()
+        if once:
+            try:
+                input()
+            except:
+                pass
+        num_iteration = optimizer.optimize(once=once)
+        if previous_num == num_iteration:
+            break
+        previous_num = num_iteration
+
 
     print('num of iteration          : {}'.format(num_iteration))
     print('final param               : {}'.format(model.get_param()))
     print('final error of sum squares: {}'.format(optimizer.ess()))
+    try:
+        input('\npress enter to terminate')
+    except:
+        pass

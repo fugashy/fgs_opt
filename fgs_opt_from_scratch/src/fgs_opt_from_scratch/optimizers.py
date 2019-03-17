@@ -53,8 +53,6 @@ class Optimizer():
                 delta_norm = LA.norm(delta, ord=2)
                 if delta_norm < self.__tolerance:
                     break
-                elif once:
-                    break
 
                 # 更新
                 param = np.array(self.__model.get_param())
@@ -62,6 +60,8 @@ class Optimizer():
                 self.__model.update(param)
 
                 self.__num_iteration += 1
+                if once:
+                    break
         except KeyboardInterrupt:
             print('user interruption has occured')
         finally:
