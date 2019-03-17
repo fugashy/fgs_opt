@@ -1,12 +1,12 @@
 model:
   type: ellipse
-  a: 2.
-  b: 4.
-  rotation: 0.7 # rad
+  a: 1.
+  b: 1.
+  rotation: 0.0 # rad
   translation: [5., 6.]
   theta_start: 0.
   theta_end: 6.3
-  theta_step: 0.02
+  theta_step: 0.06
 
 noise_model:
   type: gaussian
