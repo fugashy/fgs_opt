@@ -2,7 +2,7 @@ model:
   type: michaelis_menten
   b1: 0.362
   b2: 0.556
-  start: 0.
+  start: 0.001
   end: 10.
   step: 0.2
 
