@@ -1,10 +1,12 @@
 model:
-  type: line2d
+  type: michaelis_menten
 
 init_param: [5., 2.]
 
 updater:
-  type: gauss_newton
+# type: gauss_newton
+  type: levenberg_marquardt
+  weight: 0.1
 
 optimizer:
   tolerance: 0.0001
