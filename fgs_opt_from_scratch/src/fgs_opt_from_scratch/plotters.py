@@ -100,8 +100,8 @@ class Residual2DPlotter:
             Z.append(Z_ele)
         Z = np.array(Z)
 
+        self.__ax.contour(self.__X, self.__Y, Z, cmap='hsv')
         im = self.__ax.pcolormesh(self.__X, self.__Y, Z, cmap='hsv')
-#       im = self.__ax.contour(X, Y, np.array(Z), cmap='hsv')
         self.__fig.colorbar(im)
 
         plt.pause(0.01)
