@@ -1,14 +1,17 @@
 model:
-  type: curve
-  start: -100.
-  end: 100.
-  step: 0.2
-  alpha: 2.0
-  beta: 100.0
+  type: curve2d
+  start: -10.
+  end: 10.
+  step: 1.0
+  a: 1.0
+  b: 1.0
+  c: 1.0
+  # dを有効にすると3次関数
+# d: 1.0
 
 noise_model:
   type: gaussian
-  sigma: [0., 5.]
+  sigma: [0., 3.]
 
 saver:
   type: cv

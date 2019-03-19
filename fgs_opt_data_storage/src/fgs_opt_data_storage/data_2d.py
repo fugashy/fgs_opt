@@ -3,13 +3,21 @@ import numpy as np
 
 
 def create(conf_dict):
-    if conf_dict['type'] == 'curve':
+    if conf_dict['type'] == 'curve2d':
         start = conf_dict['start']
         end = conf_dict['end']
         step = conf_dict['step']
-        alpha = conf_dict['alpha']
-        beta = conf_dict['beta']
-        return Curve(start, end, step, alpha, beta)
+        a = conf_dict['a']
+        b = conf_dict['b']
+        c = conf_dict['c']
+        # 3次関数or2次関数
+        if 'd' in conf_dict and conf_dict['d']:
+            d = conf_dict['d']
+            p = [a, b, c, d]
+            return Curve2d(start, end, step, p)
+        else:
+            p = [a, b, c]
+            return Curve2d(start, end, step, p)
     elif conf_dict['type'] == 'ellipse':
         a = conf_dict['a']
         b = conf_dict['b']
@@ -44,38 +52,28 @@ def create(conf_dict):
                 '{} is not implemented.'.format(conf_dict['type']))
 
 
-def curve(start, end, step, alpha, beta):
-    u"""
-    Create curve data
-    """
-    if start >= end or end < step:
-        raise Exception('Invalid x configulation.')
-
-    # y = a*x^2 + b
-    y = lambda x, alpha, beta: alpha * pow(x, 2) + beta
-
-    return [[x, y(x, alpha, beta)] for x in np.arange(start, end, step)]
-
-
-class Curve():
+class Curve2d():
     u"""
     """
-    def __init__(self, start, end, step, alpha, beta):
+    def __init__(self, start, end, step, p):
+        if len(p) == 3:
+            self.__y = lambda x, p: p[0] * x**2 + p[1] * x + p[2]
+        elif len(p) == 4:
+            self.__y = lambda x, p: p[0] * x**3 + p[1] * x**2 + p[2] * x + p[3]
+        else:
+            raise Exception('Invalid parameter length.')
+
         if start >= end or end < step or step <= 0:
             raise Exception('Invalid x configulation.')
 
         self.__start = start
         self.__end = end
         self.__step = step
-        self.__alpha = alpha
-        self.__beta = beta
+        self.__p = p
 
     def create(self):
-        return curve(self.__start,
-                     self.__end,
-                     self.__step,
-                     self.__alpha,
-                     self.__beta)
+        return [[x, self.__y(x, self.__p)]
+                for x in np.arange(self.__start, self.__end, self.__step)]
 
 
 class Ellipse():
