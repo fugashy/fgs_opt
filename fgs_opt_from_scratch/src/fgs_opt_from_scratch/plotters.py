@@ -39,7 +39,6 @@ class ClickableTaylorPlotter:
 
     def onclick(self, event):
         if event.xdata is None:
-            print(event.xdata)
             return
 
         self.__fig.clf()
@@ -84,6 +83,11 @@ class Residual2DPlotter:
         self.__model = model
         x = np.arange(x_range[0], x_range[1], (x_range[1] - x_range[0]) / grid_num)
         y = np.arange(y_range[0], y_range[1], (y_range[1] - y_range[0]) / grid_num)
+        # xとyで要素数が異なったら端を削って調整
+        if len(x) > len(y):
+            x = np.delete(x, -1)
+        elif len(y) > len(x):
+            y = np.delete(y, -1)
         self.__X, self.__Y = np.meshgrid(x, y)
         self.__first = True
 
