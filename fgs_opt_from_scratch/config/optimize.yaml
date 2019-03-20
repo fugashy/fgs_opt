@@ -1,7 +1,9 @@
 model:
-  type: michaelis_menten
+# type: michaelis_menten
 # type: circle2d
-# type: line2d
+  type: line2d
+# type: curve2d_2order
+# type: curve2d_3order
 
 init_param: [10., 10.]
 

@@ -8,6 +8,10 @@ def create(config_dict):
         return Line2d()
     elif config_dict['type'] == 'circle2d':
         return Circle2d()
+    elif config_dict['type'] == 'curve2d_2order':
+        return Curve2d2Order()
+    elif config_dict['type'] == 'curve2d_3order':
+        return Curve2d3Order()
     else:
         raise NotImplementedError(
             'type {] is not implemented'.format(config_dict['type']))
@@ -102,3 +106,32 @@ class Circle2d(Model):
         drdy = lambda x, p: 2. * (x[1] - p[1])
         drdr = lambda x, p: 2. * p[2]
         self.rg = lambda x, p: [drdx(x, p), drdy(x, p), drdr(x, p)]
+
+
+class Curve2d2Order(Model):
+    def __init__(self):
+        super(Curve2d2Order, self).__init__()
+        # y = ax**2 + bx + c
+        self.p = [0., 0., 0.]
+        self.f = lambda x, p: p[0]*x[0]**2 + p[1]*x[0] + p[2]
+        self.r = lambda x, p: x[1] - self.f(x, p)
+
+        drda = lambda x, p: -x[0]**2
+        drdb = lambda x, p: -x[0]
+        drdc = lambda x, p: -1.
+        self.rg = lambda x, p: [drda(x, p), drdb(x, p), drdc(x, p)]
+
+
+class Curve2d3Order(Model):
+    def __init__(self):
+        super(Curve2d3Order, self).__init__()
+        # y = ax**3 + bx**2 + cx + d
+        self.p = [0., 0., 0., 0.]
+        self.f = lambda x, p: p[0]*x[0]**3 + p[1]*x[0]**2 + p[2]*x[0] + p[3]
+        self.r = lambda x, p: x[1] - self.f(x, p)
+
+        drda = lambda x, p: -x[0]**3
+        drdb = lambda x, p: -x[0]**2
+        drdc = lambda x, p: -x[0]
+        drdd = lambda x, p: -1.
+        self.rg = lambda x, p: [drda(x, p), drdb(x, p), drdc(x, p), drdd(x, p)]
