@@ -19,8 +19,14 @@ class Model(object):
         self.p = []
         # モデル式
         self.f = lambda x, p: np.inf
+        # モデル式のx0におけるテイラー展開(2次まで)
+        self.tf1 = lambda x, x0, p: np.inf
+        self.tf2 = lambda x, x0, p: np.inf
         # 残差式
         self.r = lambda x, p: np.inf
+        # 残差式のx0におけるテイラー展開(2次まで)
+        self.rf1 = lambda x, x0, p: np.inf
+        self.rf2 = lambda x, x0, p: np.inf
         # 残差勾配
         self.rg = lambda x, p: [np.inf]
 
@@ -38,6 +44,27 @@ class Model(object):
 
     def gradient(self, x):
         return self.rg(x, self.p)
+
+    def taylor(self, x, x0, order):
+        if order == 1:
+            taylor_func = self.tf1
+        elif order == 2:
+            taylor_func = self.tf2
+        else:
+            raise Exception('Invalid order of taylor function({}).'
+                            'We ignore this process.'.format(order))
+        return taylor_func(x, x0, self.p)
+
+    def residual_taylor(self, x, x0, order):
+        if order == 1:
+            taylor_func = self.rf1
+        elif order == 2:
+            taylor_func = self.rf2
+        else:
+            raise Exception('Invalid order of taylor function({}).'
+                            'We ignore this process.'.format(order))
+        return taylor_func(x, x0, self.p)
+
 
 # https://ja.wikipedia.org/wiki/%E3%82%AC%E3%82%A6%E3%82%B9%E3%83%BB%E3%83%8B%E3%83%A5%E3%83%BC%E3%83%88%E3%83%B3%E6%B3%95#%E4%BE%8B
 # x1 = p0*x0 / (p1 + x0)
