@@ -6,8 +6,7 @@ import numpy as np
 import yaml
 
 from fgs_opt_from_scratch import (
-        taylor_functions as functions,
-        plotters
+        models, plotters
 )
 
 if __name__ == '__main__':
@@ -18,9 +17,9 @@ if __name__ == '__main__':
     f = open(argv[-1], 'r')
     config_dict = yaml.load(f)
 
-    func = functions.create(config_dict)
+    model = models.create(config_dict['model'])
     x_range = config_dict['x_range']
-    plotter = plotters.ClickableTaylorPlotter(func, x_range)
+    plotter = plotters.ClickableTaylorPlotter(model, x_range)
     plotter.show()
 
     try:

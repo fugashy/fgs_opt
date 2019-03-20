@@ -23,10 +23,10 @@ class ClickableTaylorPlotter:
     u"""
     描画エリアをクリックしたポイントに応じたテイラー近似を表示するクラス
     """
-    def __init__(self, function, x_range):
-        self.__func = function
+    def __init__(self, model, x_range):
+        self.__model = model
         self.__x = np.arange(x_range[0], x_range[1], 0.1)
-        self.__y = [self.__func.fx(x) for x in self.__x]
+        self.__y = [self.__model.fx([x]) for x in self.__x]
 
         self.__fig = plt.figure('taylor')
         self.__fig.canvas.mpl_connect('button_press_event', self.onclick)
@@ -54,10 +54,8 @@ class ClickableTaylorPlotter:
         taylor2_y_array = []
         for new_x in self.__x:
             taylor_x_array.append(new_x)
-            taylor1_y_array.append(
-                    self.__func.taylor([x, self.__func.fx(x)], new_x, d=1))
-            taylor2_y_array.append(
-                    self.__func.taylor([x, self.__func.fx(x)], new_x, d=2))
+            taylor1_y_array.append(self.__model.taylor([new_x], [x], 1))
+            taylor2_y_array.append(self.__model.taylor([new_x], [x], 2))
 
         self.__ax.plot(self.__x, self.__y, marker='.')
         self.__ax.plot(taylor_x_array, taylor1_y_array, marker='.')

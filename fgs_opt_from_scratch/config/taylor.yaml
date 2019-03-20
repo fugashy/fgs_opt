@@ -1,11 +1,12 @@
-# type: Curve2Order
+model:
+# type: curve2d_2order
 # a: -3.
 # b: -2.
 # c: 5.
-type: Curve3Order
-a: 1.
-b: -8.
-c: -5.
-d: -7.
+  type: curve2d_3order
+  a: 1.
+  b: -8.
+  c: -5.
+  d: -7.
 
 x_range: [-50., 50.]
