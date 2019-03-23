@@ -20,7 +20,6 @@ if __name__ == '__main__':
 
     # モデル
     model = models.create(config_dict['model'])
-    model.update(config_dict['init_param'])
 
     # パラメータ更新器
     updater = updaters.create(config_dict['updater'])

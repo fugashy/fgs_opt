@@ -1,11 +1,23 @@
 model:
 # type: michaelis_menten
+# b0: 0.5
+# b1: 0.1
 # type: circle2d
+# x: 3.
+# y: -1.
+# r: 2.
   type: line2d
+  a: 2.
+  b: 5.
 # type: curve2d_2order
+# a: 1.
+# b: 2.
+# c: 3.
 # type: curve2d_3order
-
-init_param: [10., 10.]
+# a: 1.
+# b: 2.
+# c: 3.
+# d: 4.
 
 updater:
 # type: gauss_newton

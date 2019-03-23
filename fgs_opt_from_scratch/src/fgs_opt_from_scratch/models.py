@@ -2,36 +2,52 @@
 from copy import deepcopy
 
 def create(config_dict):
-    # TODO Refactoring
     if config_dict['type'] == 'michaelis_menten':
-        return MichaelisMentenEquation()
+        p = [0., 0.]
+        param_keys = ['b0', 'b1']
+        model = MichaelisMentenEquation
     elif config_dict['type'] == 'line2d':
-        return Line2d()
+        p = [0., 0.]
+        param_keys = ['a', 'b']
+        model = Line2d
     elif config_dict['type'] == 'circle2d':
-        return Circle2d()
+        p = [0., 0., 0.]
+        param_keys = ['x', 'y', 'r']
+        model = Circle2d
     elif config_dict['type'] == 'curve2d_2order':
         p = [0., 0., 0.]
         param_keys = ['a', 'b', 'c']
-        for i, param_key in enumerate(param_keys):
-            if param_key in config_dict and config_dict[param_key]:
-                p[i] = config_dict[param_key]
-        return Curve2d2Order(p)
+        model = Curve2d2Order
     elif config_dict['type'] == 'curve2d_3order':
         p = [0., 0., 0., 0.]
         param_keys = ['a', 'b', 'c', 'd']
-        for i, param_key in enumerate(param_keys):
-            if param_key in config_dict and config_dict[param_key]:
-                p[i] = config_dict[param_key]
-        return Curve2d3Order(p)
+        model = Curve2d3Order
     else:
         raise NotImplementedError(
             'type {] is not implemented'.format(config_dict['type']))
 
+    for i, param_key in enumerate(param_keys):
+        if param_key in config_dict and config_dict[param_key]:
+            p[i] = config_dict[param_key]
+
+    return model(p)
+
+
 
 class Model(object):
-    def __init__(self):
+    def __init__(self, p, expected_dof):
+        u"""
+        Args:
+            p: パラメータ(list of float)
+            expected_dof: 期待するdof(int)
+        """
+        if type(p) is not list or \
+            type(p[0]) is not float or \
+            len(p) != expected_dof:
+                raise Exception(
+                        'Order of parameter({}) is invalid'.format(len(p)))
         # パラメータ
-        self.p = []
+        self.p = p
         # モデル式
         self.f = lambda x, p: np.inf
         # モデル式のx0におけるテイラー展開(2次まで)
@@ -87,9 +103,8 @@ class Model(object):
 # https://ja.wikipedia.org/wiki/%E3%82%AC%E3%82%A6%E3%82%B9%E3%83%BB%E3%83%8B%E3%83%A5%E3%83%BC%E3%83%88%E3%83%B3%E6%B3%95#%E4%BE%8B
 # x1 = p0*x0 / (p1 + x0)
 class MichaelisMentenEquation(Model):
-    def __init__(self):
-        super(MichaelisMentenEquation, self).__init__()
-        self.p = [0., 0.]
+    def __init__(self, p):
+        super(MichaelisMentenEquation, self).__init__(p, 2)
         self.f = lambda x, p: p[0] * x[0] / (p[1] + x[0])
         self.r = lambda x, p: x[1] - self.f(x, p)
         drdx0 = lambda x, p: -x[0] / (p[1] + x[0])
@@ -98,9 +113,8 @@ class MichaelisMentenEquation(Model):
 
 
 class Line2d(Model):
-    def __init__(self):
-        super(Line2d, self).__init__()
-        self.p = [0., 0.]
+    def __init__(self, p):
+        super(Line2d, self).__init__(p, 2)
         self.f = lambda x, p: p[0]*x[0] + p[1]
         self.r = lambda x, p: x[1] - self.f(x, p)
         drda = lambda x, p: -x[0]
@@ -109,10 +123,8 @@ class Line2d(Model):
 
 
 class Circle2d(Model):
-    def __init__(self):
-        super(Circle2d, self).__init__()
-        # x, y, r
-        self.p = [0., 0., 0.]
+    def __init__(self, p):
+        super(Circle2d, self).__init__(p, 3)
         self.f = lambda x, p: (x[0] - p[0])**2 + (x[1] - p[1])**2
         self.r = lambda x, p: p[2]**2 - self.f(x, p)
 
@@ -124,11 +136,8 @@ class Circle2d(Model):
 
 class Curve2d2Order(Model):
     def __init__(self, p):
-        super(Curve2d2Order, self).__init__()
+        super(Curve2d2Order, self).__init__(p, 3)
         # y = ax**2 + bx + c
-        if len(p) != 3:
-            raise Exception('Invalid dof of parameter({})'.format(len(p)))
-        self.p = p
         self.f = lambda x, p: p[0]*x[0]**2 + p[1]*x[0] + p[2]
         self.r = lambda x, p: x[1] - self.f(x, p)
 
@@ -145,11 +154,8 @@ class Curve2d2Order(Model):
 
 class Curve2d3Order(Model):
     def __init__(self, p):
-        super(Curve2d3Order, self).__init__()
+        super(Curve2d3Order, self).__init__(p, 4)
         # y = ax**3 + bx**2 + cx + d
-        if len(p) != 4:
-            raise Exception('Invalid dof of parameter({})'.format(len(p)))
-        self.p = p
         self.f = lambda x, p: p[0]*x[0]**3 + p[1]*x[0]**2 + p[2]*x[0] + p[3]
         self.r = lambda x, p: x[1] - self.f(x, p)
 
