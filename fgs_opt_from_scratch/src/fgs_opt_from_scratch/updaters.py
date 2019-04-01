@@ -58,9 +58,13 @@ class LevenbergMarquardt():
     def __init__(self, weight):
         u"""
         Args:
-            weight: 更新に勾配に掛け合わせる重み(float)
+            weight: 更新に勾配に掛け合わせる重み(1より小さい正値）(float)
         """
+        if weight < 0. or 1. < weight:
+            raise Exception('Weight of LM should be in range between 0 and 1')
+
         self.__weight = weight
+        self.__previous_ess = None
 
     def update(self, model, data):
         u"""
@@ -71,6 +75,12 @@ class LevenbergMarquardt():
         Returns:
             更新されたパラメータ(numpy.array)
         """
+        # 初期の残差の平方和を求める
+        if self.__previous_ess is None:
+            self.__previous_ess = 0.
+            for i in range(len(data)):
+                self.__previous_ess += model.residual(data[i])**2
+
         # ヤコビアン(パラメータ数 x パラメータ自由度)
         J = np.zeros((len(data), len(model.get_param())))
         for i in range(len(data)):
@@ -82,11 +92,33 @@ class LevenbergMarquardt():
         # 近似されたヘッセ行列の対角成分のみを残した行列
         DAH = np.diag(AH.diagonal())
 
-        # 残差ベクトル
-        R = np.array([model.residual(
-            data[i]) for i in range(len(data))]).T
+        while True:
+            # 重み
+            C = np.eye(DAH.shape[0]) * self.__weight
 
-        # 更新パラメータ
-        delta = np.dot(np.dot(LA.pinv(AH + self.__weight * DAH), J.T), R)
+            # 残差ベクトル
+            R = np.array([model.residual(
+                data[i]) for i in range(len(data))]).T
+
+            # 更新パラメータ
+            delta = np.dot(np.dot(LA.pinv(AH + C * DAH), J.T), R)
+
+            # 更新したパラメータで残差平方和を求める
+            current_param = model.get_param()
+            model.update(current_param - delta)
+            current_ess = 0.
+            for i in range(len(data)):
+                current_ess += model.residual(data[i])**2
+
+            if current_ess > self.__previous_ess:
+                # 前回の値よりおおきくなるようなら重みを更新して再度計算する
+                self.__weight *= 10.
+                # パラメータは更新しない
+                model.update(current_param)
+            else:
+                # そうでないなら更新する
+                self.__weight /= 10.
+                self.__previous_ess = current_ess
+                break
 
         return delta

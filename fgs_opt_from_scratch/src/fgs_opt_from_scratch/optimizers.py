@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from copy import deepcopy
 import numpy as np
 import numpy.linalg as LA
 
@@ -29,7 +30,7 @@ class Optimizer():
         u"""
         残差平方和(Error of sum squares)を計算する
         """
-        ess = 0;
+        ess = 0
         for i in range(len(self.__data)):
             ess += self.__model.residual(self.__data[i])**2
 
@@ -47,7 +48,8 @@ class Optimizer():
         """
         try:
             while True:
-                delta = self.__updater.update(self.__model, self.__data)
+                delta = self.__updater.update(
+                        deepcopy(self.__model), deepcopy(self.__data))
 
                 # 更新量が十分小さくなったら終了
                 delta_norm = LA.norm(delta, ord=2)

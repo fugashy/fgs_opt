@@ -22,7 +22,7 @@ model:
 updater:
 # type: gauss_newton
   type: levenberg_marquardt
-  weight: 0.1
+  weight: 0.0001
 
 optimizer:
   tolerance: 0.0001
