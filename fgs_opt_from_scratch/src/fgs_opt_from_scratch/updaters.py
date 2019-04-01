@@ -110,7 +110,6 @@ class LevenbergMarquardt():
             for i in range(len(data)):
                 current_ess += model.residual(data[i])**2
 
-            print(self.__previous_ess, current_ess)
             if current_ess > self.__previous_ess:
                 # 前回の値よりおおきくなるようなら重みを更新して再度計算する
                 self.__weight *= 10.
