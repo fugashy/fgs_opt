@@ -58,9 +58,9 @@ class LevenbergMarquardt():
     def __init__(self, weight):
         u"""
         Args:
-            weight: 更新に勾配に掛け合わせる重み(1より小さい正値）(float)
+            weight: 更新に勾配に掛け合わせる重み(1より大きい値）(float)
         """
-        if weight < 0. or 1. < weight:
+        if weight <= 1.:
             raise Exception('Weight of LM should be in range between 0 and 1')
 
         self.__weight = weight
@@ -110,6 +110,7 @@ class LevenbergMarquardt():
             for i in range(len(data)):
                 current_ess += model.residual(data[i])**2
 
+            print(self.__previous_ess, current_ess)
             if current_ess > self.__previous_ess:
                 # 前回の値よりおおきくなるようなら重みを更新して再度計算する
                 self.__weight *= 10.
