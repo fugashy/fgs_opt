@@ -1,15 +1,13 @@
 <?xml version="1.0"?>
 <package format="2">
   <name>fgs_ceres_playground</name>
-  <version>0.0.0</version>
+  <version>2.0.0</version>
   <description>The fgs_ceres_playground package</description>
   <maintainer email="fugashy@icloud.com">fugashy</maintainer>
 
   <license>MIT</license>
 
   <url type="website">https://github.com/fugashy</url>
-
-  <license>MIT</license>
 
   <buildtool_depend>ament_cmake_ros</buildtool_depend>
 
