@@ -1,21 +1,31 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
+from sys import exit
+
 import cv2
-from fgs_opt_from_scratch import (
-        models, optimizers, updaters, plotters)
+import rclpy
+from rclpy.node import Node
 import yaml
-from sys import exit, argv
 
-if __name__ == '__main__':
-    if len(argv) != 3:
-        print('usage: rosrun fgs_opt_from_scratch optimize config_path data_path')
-        exit(-1)
+from fgs_opt_from_scratch import (
+    models, optimizers, updaters, plotters
+)
 
-    with open(argv[1], 'r') as f:
-        config_dict = yaml.load(f)
+
+def optimize(args=None):
+    rclpy.init(args=args)
+
+    node = Node('optimize')
+
+    node.declare_parameter(name='config_path', value='')
+    node.declare_parameter(name='data_path', value='')
+    config_path = node.get_parameter('config_path').value
+    data_path = node.get_parameter('data_path').value
+
+    with open(config_path, 'r') as f:
+        config_dict = yaml.load(f, Loader=yaml.FullLoader)
 
     # データ
-    cv_yaml = cv2.FileStorage(argv[2], cv2.FileStorage_READ)
+    cv_yaml = cv2.FileStorage(data_path, cv2.FileStorage_READ)
     data = cv_yaml.getNode('data').mat()
 
     # モデル
@@ -49,6 +59,7 @@ if __name__ == '__main__':
             plotter.plot()
         if once:
             try:
+                print('press enter to next iteration')
                 input()
             except:
                 pass
@@ -63,5 +74,28 @@ if __name__ == '__main__':
     print('final error of sum squares: {}'.format(optimizer.ess()))
     try:
         input('\npress enter to terminate')
+    except:
+        pass
+
+    exit(0)
+
+
+def view_taylor(args=None):
+    rclpy.init(args=args)
+    node = Node('view_taylor')
+
+    node.declare_parameter(name='config_path', value='')
+    config_path = node.get_parameter('config_path').value
+
+    f = open(config_path, 'r')
+    config_dict = yaml.load(f, Loader=yaml.FullLoader)
+
+    model = models.create(config_dict['model'])
+    x_range = config_dict['x_range']
+    plotter = plotters.ClickableTaylorPlotter(model, x_range)
+    plotter.show()
+
+    try:
+        input('press enter to terminate')
     except:
         pass

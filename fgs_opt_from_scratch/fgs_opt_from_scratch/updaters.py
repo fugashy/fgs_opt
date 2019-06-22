@@ -60,7 +60,7 @@ class LevenbergMarquardt():
         Args:
             weight: 更新に勾配に掛け合わせる重み(1より大きい値）(float)
         """
-        if weight <= 1.:
+        if weight <= 0. or 1. < weight:
             raise Exception('Weight of LM should be in range between 0 and 1')
 
         self.__weight = weight

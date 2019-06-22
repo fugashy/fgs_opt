@@ -1,22 +1,22 @@
 <?xml version="1.0"?>
-<package>
+<?xml-model href="http://download.ros.org/schema/package_format2.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
+<package format="2">
   <name>fgs_opt_from_scratch</name>
-  <version>0.0.0</version>
+  <version>2.0.0</version>
   <description>The fgs_opt_from_scratch package</description>
 
+  <author>fugashy</author>
+  <author email="fugashy@icloud.com">fugashy</author>
   <maintainer email="fugashy@icloud.com">fugashy</maintainer>
 
   <license>MIT</license>
 
   <url type="website">https://github.com/fugashy</url>
 
-  <buildtool_depend>catkin</buildtool_depend>
-  <build_depend>fgs_opt_data_storage</build_depend>
-  <run_depend>fgs_opt_data_storage</run_depend>
+  <exec_depend>rclpy</exec_depend>
+  <exec_depend>fgs_opt_data_storage</exec_depend>
 
-  <!-- The export tag contains other, unspecified, tags -->
   <export>
-    <!-- Other tools can request additional information be placed here -->
-
+    <build_type>ament_python</build_type>
   </export>
 </package>
