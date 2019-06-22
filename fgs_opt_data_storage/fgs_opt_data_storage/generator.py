@@ -13,7 +13,7 @@ from fgs_opt_data_storage import (
 
 def generate_2d(config_path):
     f = open(config_path, 'r')
-    config_dict = yaml.load(f)
+    config_dict = yaml.load(f, Loader=yaml.FullLoader)
 
     m = data_2d.create(config_dict['model'])
     nm = noise_model.create(config_dict['noise_model'])
