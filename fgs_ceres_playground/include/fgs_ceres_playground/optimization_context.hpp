@@ -13,7 +13,8 @@ namespace ceres_playground {
 
 class OptimizationContext {
  public:
-  typedef std::shared_ptr<OptimizationContext> Ptr;
+  virtual ~OptimizationContext() {}
+  using Ptr =  std::shared_ptr<OptimizationContext>;
   virtual void Solve(ceres::Solver::Options& options) = 0;
 };
 
@@ -53,37 +54,38 @@ class FittingContext : public OptimizationContext {
   ceres::Problem problem_;
 };
 
-template<class ResidualType>
-class BALContext : public OptimizationContext {
- public:
-  BALContext(const std::string& cv_storage_path) :
-      problem_source_(new BundleAdjustmentInTheLarge(cv_storage_path)) {
-    for (int i = 0; i < problem_source_->observations_num(); ++i) {
-      const cv::Mat data = problem_source_->observation_data(i);
-      double* camera_parameter = problem_source_->param_associated_with_obs(
-          i, BundleAdjustmentInTheLarge::Item::Camera);
-      double* point = problem_source_->param_associated_with_obs(
-          i, BundleAdjustmentInTheLarge::Item::Point);
-      ceres::CostFunction* cf = ResidualType::Create(data);
-      problem_.AddResidualBlock(cf, NULL, camera_parameter, point);
-    }
-  }
-
-  virtual void Solve(ceres::Solver::Options& options) {
-    CVBALVisualizer viz(problem_source_, "BAL");
-    viz.AddNoise(0.0, 0.1);
-    viz.Show();
-
-    ceres::Solver::Summary summary;
-    ceres::Solve(options, &problem_, &summary);
-
-    viz.Show();
-  }
-
- private:
-  std::shared_ptr<BundleAdjustmentInTheLarge> problem_source_;
-  ceres::Problem problem_;
-};
+// opencv vizをインストールするまで封印
+//template<class ResidualType>
+//class BALContext : public OptimizationContext {
+// public:
+//  BALContext(const std::string& cv_storage_path) :
+//      problem_source_(new BundleAdjustmentInTheLarge(cv_storage_path)) {
+//    for (int i = 0; i < problem_source_->observations_num(); ++i) {
+//      const cv::Mat data = problem_source_->observation_data(i);
+//      double* camera_parameter = problem_source_->param_associated_with_obs(
+//          i, BundleAdjustmentInTheLarge::Item::Camera);
+//      double* point = problem_source_->param_associated_with_obs(
+//          i, BundleAdjustmentInTheLarge::Item::Point);
+//      ceres::CostFunction* cf = ResidualType::Create(data);
+//      problem_.AddResidualBlock(cf, NULL, camera_parameter, point);
+//    }
+//  }
+//
+//  virtual void Solve(ceres::Solver::Options& options) {
+//    CVBALVisualizer viz(problem_source_, "BAL");
+//    viz.AddNoise(0.0, 0.1);
+//    viz.Show();
+//
+//    ceres::Solver::Summary summary;
+//    ceres::Solve(options, &problem_, &summary);
+//
+//    viz.Show();
+//  }
+//
+// private:
+//  std::shared_ptr<BundleAdjustmentInTheLarge> problem_source_;
+//  ceres::Problem problem_;
+//};
 }
 }
 #endif

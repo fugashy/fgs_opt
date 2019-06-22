@@ -2,6 +2,7 @@
 #define FGS_CERES_PLAYGROUND_INITIALIZER_HPP_
 #include <limits>
 #include <memory>
+#include <random>
 #include <vector>
 
 namespace fgs {
