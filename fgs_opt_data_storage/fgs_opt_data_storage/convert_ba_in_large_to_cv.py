@@ -1,14 +1,10 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
-from fgs_opt_data_storage import saver
 from sys import exit, argv
+import saver
 
 
 # See this link for detail
 # http://grail.cs.washington.edu/projects/bal/
-if __name__ == '__main__':
-    args = argv
+def main(args=None):
     with open(args[-1], 'r') as f:
         all_line = f.readlines()
         index = 0
@@ -59,3 +55,7 @@ if __name__ == '__main__':
 
     saver.save_ba_in_large_as_cv('/tmp/cv_ba_in_large.yaml', all_data)
     print('done')
+
+
+if __name__ == '__main__':
+    main()

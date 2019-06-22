@@ -20,9 +20,9 @@ def model_and_observed(model_data, observed_data, label=None):
     if label is not None:
         plt.xlabel(label[0])
         plt.ylabel(label[1])
-        plt.legend()
 
-    plt.plot(list(md_t[0]), list(md_t[1]))
-    plt.scatter(list(od_t[0]), list(od_t[1]))
+    plt.plot(list(md_t[0]), list(md_t[1]), label='model')
+    plt.scatter(list(od_t[0]), list(od_t[1]), c='red', label='observed')
+    plt.legend()
 
     plt.show()

@@ -1,28 +1,23 @@
 <?xml version="1.0"?>
-<package>
+<?xml-model href="http://download.ros.org/schema/package_format2.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
+<package format="2">
   <name>fgs_opt_data_storage</name>
-  <version>0.0.0</version>
+  <version>2.0.0</version>
   <description>The fgs_opt_data_storage package</description>
-
   <maintainer email="fugashy@icloud.com">fugashy</maintainer>
-
   <license>MIT</license>
+
+  <author>fugashy</author>
+  <author email="fugashy@icloud.com">fugashy</author>
 
   <url type="website">https://github.com/fugashy</url>
 
   <license>MIT</license>
-  <buildtool_depend>catkin</buildtool_depend>
-  <build_depend>rospy</build_depend>
-  <build_depend>roscpp</build_depend>
-  <build_depend>cv_bridge</build_depend>
-  <run_depend>rospy</run_depend>
-  <run_depend>roscpp</run_depend>
-  <run_depend>cv_bridge</run_depend>
 
+  <exec_depend>rclpy</exec_depend>
+  <exec_depend>cv_bridge</exec_depend>
 
-  <!-- The export tag contains other, unspecified, tags -->
   <export>
-    <!-- Other tools can request additional information be placed here -->
-
+    <build_type>ament_python</build_type>
   </export>
 </package>
