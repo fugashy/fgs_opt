@@ -1,6 +1,6 @@
 from setuptools import setup
 
-PKG_NAME='fgs_opt_data_storage'
+PKG_NAME='fgs_data_generator'
 
 setup(
     name=PKG_NAME,
@@ -24,8 +24,8 @@ setup(
     test_suite='test',
     entry_points={
         'console_scripts': [
-            'generate_data_2d = fgs_opt_data_storage.generator:ros2_entry_point',
-            'convert_ba_in_large_to_cv = fgs_opt_data_storage.convert_ba_in_large_to_cv:main',
+            'generate_data_2d = fgs_data_generator.generator:ros2_entry_point',
+            'convert_ba_in_large_to_cv = fgs_data_generator.convert_ba_in_large_to_cv:main',
         ],
     },
 )

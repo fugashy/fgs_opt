@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
 <?xml-model href="http://download.ros.org/schema/package_format2.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="2">
-  <name>fgs_opt_data_storage</name>
+  <name>fgs_data_generator</name>
   <version>2.0.0</version>
-  <description>The fgs_opt_data_storage package</description>
+  <description>Generate data file for several purpose.</description>
   <maintainer email="fugashy@icloud.com">fugashy</maintainer>
   <license>MIT</license>
 
@@ -15,7 +15,6 @@
   <license>MIT</license>
 
   <exec_depend>rclpy</exec_depend>
-  <exec_depend>cv_bridge</exec_depend>
 
   <export>
     <build_type>ament_python</build_type>
