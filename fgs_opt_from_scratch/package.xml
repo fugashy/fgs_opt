@@ -14,7 +14,7 @@
   <url type="website">https://github.com/fugashy</url>
 
   <exec_depend>rclpy</exec_depend>
-  <exec_depend>fgs_opt_data_storage</exec_depend>
+  <exec_depend>fgs_data_generator</exec_depend>
 
   <export>
     <build_type>ament_python</build_type>
