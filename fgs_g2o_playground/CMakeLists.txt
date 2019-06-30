@@ -1,71 +1,62 @@
-cmake_minimum_required(VERSION 2.8.3)
+cmake_minimum_required(VERSION 3.5)
 project(fgs_g2o_playground)
 
-add_compile_options(-std=c++11)
+if(NOT CMAKE_CXX_STANDARD)
+  set(CMAKE_CXX_STANDARD 14)
+endif()
 
-find_package(catkin REQUIRED COMPONENTS
-  roscpp
+if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+  add_compile_options(-Wall -Wextra)
+endif()
+
+find_package(ament_cmake REQUIRED)
+find_package(EIGEN3 REQUIRED)
+find_package(OpenCV 4 REQUIRED)
+find_package(rclcpp REQUIRED)
+
+set(g2o_INCLUDE_DIRS /usr/local/Cellar/g2o/2017-07-30/include)
+set(g2o_LIB_DIR /usr/local/Cellar/g2o/2017-07-30/lib)
+set(g2o_LIBS
+  ${g2o_LIB_DIR}/libg2o_core.dylib
+  ${g2o_LIB_DIR}/libg2o_csparse_extension.dylib
+  ${g2o_LIB_DIR}/libg2o_ext_freeglut_minimal.dylib
+  ${g2o_LIB_DIR}/libg2o_incremental.dylib
+  ${g2o_LIB_DIR}/libg2o_interactive.dylib
+  ${g2o_LIB_DIR}/libg2o_interface.dylib
+  ${g2o_LIB_DIR}/libg2o_opengl_helper.dylib
+  ${g2o_LIB_DIR}/libg2o_parser.dylib
+  ${g2o_LIB_DIR}/libg2o_simulator.dylib
+  ${g2o_LIB_DIR}/libg2o_solver_cholmod.dylib
+  ${g2o_LIB_DIR}/libg2o_solver_csparse.dylib
+  ${g2o_LIB_DIR}/libg2o_solver_dense.dylib
+  ${g2o_LIB_DIR}/libg2o_solver_eigen.dylib
+  ${g2o_LIB_DIR}/libg2o_solver_pcg.dylib
+  ${g2o_LIB_DIR}/libg2o_solver_slam2d_linear.dylib
+  ${g2o_LIB_DIR}/libg2o_solver_structure_only.dylib
+  ${g2o_LIB_DIR}/libg2o_stuff.dylib
+  ${g2o_LIB_DIR}/libg2o_types_data.dylib
+  ${g2o_LIB_DIR}/libg2o_types_icp.dylib
+  ${g2o_LIB_DIR}/libg2o_types_sba.dylib
+  ${g2o_LIB_DIR}/libg2o_types_sclam2d.dylib
+  ${g2o_LIB_DIR}/libg2o_types_sim3.dylib
+  ${g2o_LIB_DIR}/libg2o_types_slam2d.dylib
+  ${g2o_LIB_DIR}/libg2o_types_slam2d_addons.dylib
+  ${g2o_LIB_DIR}/libg2o_types_slam3d.dylib
+  ${g2o_LIB_DIR}/libg2o_types_slam3d_addons.dylib
 )
 
-find_package(Boost REQUIRED COMPONENTS system)
-find_package(Eigen3 REQUIRED)
-
-find_package(OpenCV 3.4.1 EXACT REQUIRED
-  PATHS /opt/opencv/3.4.1/share/OpenCV
-  NO_DEFAULT_PATH
-)
-
-catkin_package(
-  INCLUDE_DIRS
-  LIBRARIES
-  CATKIN_DEPENDS roscpp
-)
-
-
-# TODO(fugashy) More smarter
-set(G2O_LIBS
- /usr/local/lib/libg2o_cli.so
- /usr/local/lib/libg2o_core.so
- /usr/local/lib/libg2o_csparse_extension.so
- /usr/local/lib/libg2o_ext_csparse.so
- /usr/local/lib/libg2o_ext_freeglut_minimal.so
- /usr/local/lib/libg2o_incremental.so
- /usr/local/lib/libg2o_interactive.so
- /usr/local/lib/libg2o_interface.so
- /usr/local/lib/libg2o_opengl_helper.so
- /usr/local/lib/libg2o_parser.so
- /usr/local/lib/libg2o_simulator.so
- /usr/local/lib/libg2o_solver_cholmod.so
- /usr/local/lib/libg2o_solver_csparse.so
- /usr/local/lib/libg2o_solver_dense.so
- /usr/local/lib/libg2o_solver_eigen.so
- /usr/local/lib/libg2o_solver_pcg.so
- /usr/local/lib/libg2o_solver_slam2d_linear.so
- /usr/local/lib/libg2o_solver_structure_only.so
- /usr/local/lib/libg2o_stuff.so
- /usr/local/lib/libg2o_types_data.so
- /usr/local/lib/libg2o_types_icp.so
- /usr/local/lib/libg2o_types_sba.so
- /usr/local/lib/libg2o_types_sclam2d.so
- /usr/local/lib/libg2o_types_sim3.so
- /usr/local/lib/libg2o_types_slam2d.so
- /usr/local/lib/libg2o_types_slam2d_addons.so
- /usr/local/lib/libg2o_types_slam3d.so
- /usr/local/lib/libg2o_types_slam3d_addons.so
-)
-
+ament_export_dependencies(OpenCV)
 
 include_directories(
   include
-  ${catkin_INCLUDE_DIRS}
   ${EIGEN3_INCLUDE_DIRS}
+  ${g2o_INCLUDE_DIRS}
   ${OpenCV_INCLUDE_DIRS}
 )
 
 add_library(${PROJECT_NAME}_optimizer src/${PROJECT_NAME}/optimizer.cpp)
 target_link_libraries(${PROJECT_NAME}_optimizer
-  ${catkin_LIBRARIES}
-  ${G2O_LIBS}
+  ${g2o_LIBS}
 )
 
 add_executable(${PROJECT_NAME}_fitting src/${PROJECT_NAME}/fitting.cpp)
@@ -75,7 +66,6 @@ target_link_libraries(${PROJECT_NAME}_fitting
 )
 
 install(TARGETS ${PROJECT_NAME}_fitting
-  ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-  LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-  RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+  DESTINATION lib/${PROJECT_NAME}
 )
+ament_package()
