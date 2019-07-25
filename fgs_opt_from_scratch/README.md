@@ -13,7 +13,16 @@
   設定ファイルにしたがってモデルパラメータの推定を行う
 
   ```bash
-  rosrun fgs_opt_from_scratch optimize config_path data_path
+  ros2 run fgs_opt_from_scratch optimize __params:=PARAM_FILE.yaml
+  ```
+
+  PARAM_FILEのサンプル
+
+  ```yaml
+  optimize:
+    ros__parameters:
+      config_path: PATH_TO_THIS_PKG/config/optimize.yaml
+      data_path: /tmp/data_XXXX.yaml
   ```
 
 - view_taylor
@@ -22,5 +31,13 @@
   任意の点は、グラフをクリックしたときのx軸に依る
 
   ```bash
-  rosrun fgs_opt_from_scratch view_taylor /path/to/this/package/config/taylor.yaml
+  ros2 run fgs_opt_from_scratch view_taylor __params:=PARAM_FILE.yaml
+  ```
+
+  PARAM_FILEのサンプル
+
+  ```yaml
+  view_taylor:
+    ros__parameters:
+      config_path: PATH_TO_THIS_PKG/config/taylor.yaml
   ```
