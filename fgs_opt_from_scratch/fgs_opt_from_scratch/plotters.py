@@ -162,12 +162,13 @@ class Param2DPlotter:
                 self.__model.update([self.__X[i][j], self.__Y[i][j]])
                 ess = 0
                 for k in range(len(self.__data)):
-                    ess += self.__model.residual(self.__data[k])**2
+                    # 誤差があまりにも大きくなることがあるので対数にする
+                    # 大小関係は変わらない
+                    ess += np.log(self.__model.residual(self.__data[k])**2)
                 Z_ele.append(ess)
             Z.append(Z_ele)
         Z = np.array(Z)
 
-        self.__ax.contour(self.__X, self.__Y, Z, cmap='hsv')
         im = self.__ax.pcolormesh(self.__X, self.__Y, Z, cmap='hsv')
         self.__fig.colorbar(im)
 
