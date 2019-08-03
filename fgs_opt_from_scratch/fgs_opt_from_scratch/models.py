@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from copy import deepcopy
+from math import cos, sin
 
 def create(config_dict):
     if config_dict['type'] == 'michaelis_menten':
@@ -22,6 +23,10 @@ def create(config_dict):
         p = [0., 0., 0., 0.]
         param_keys = ['a', 'b', 'c', 'd']
         model = Curve2d3Order
+    elif config_dict['type'] == 'cos':
+        p = [0., 0.]
+        param_keys = ['a', 'b']
+        model = Cos
     else:
         raise NotImplementedError(
             'type {] is not implemented'.format(config_dict['type']))
@@ -131,8 +136,10 @@ class Curve2d2Order(Model):
         drdc = lambda x, p: -1.
         self._rg = lambda x, p: [drda(x, p), drdb(x, p), drdc(x, p)]
 
+        # f(x0) + {1/1! * f'(x0) * (x - x0)}
         self._tf[0] = lambda x, x0, p: self._f(x0, p) + \
                 (2.*p[0]*x0[0] + p[1])*(x[0] - x0[0])
+        # f(x0) + {1/1! * f'(x0) * (x - x0)} + {1/2! * f''(x0) * (x - x0)^2
         self._tf[1] = lambda x, x0, p: self._tf[0](x, x0, p) + \
                 p[0]*(x[0] - x0[0])**2
 
@@ -154,3 +161,21 @@ class Curve2d3Order(Model):
                 (3.*p[0]*x0[0]**2 + 2.*p[1]*x0[0] + p[2])*(x[0] - x0[0])
         self._tf[1] = lambda x, x0, p: self._tf[0](x, x0, p) + \
                 (6.*p[0]*x0[0] + 2.*p[1])*(x[0] - x0[0])**2.
+
+
+class Cos(Model):
+    def __init__(self, p):
+        # p = [a, b]
+        super(Cos, self).__init__(p, 2)
+        # y = a*cos(bx)
+        self._f = lambda x, p: p[0] * cos(p[1] * x[0])
+        self._r = lambda x, p: x[1] - self._f(x, p)
+
+        drda = lambda x, p: -cos(p[1] * x[0])
+        drdb = lambda x, p: x[0] * p[0] * sin(p[1] * x[0])
+        self._rg = lambda x, p: [drda(x, p), drdb(x, p)]
+
+        self._tf[0] = lambda x, x0, p: self._f(x0, p) - \
+            p[0] * p[1] * sin(p[1] * x0[0]) * (x[0] - x0[0])
+        self._tf[1] = lambda x, x0, p: self._tf[0](x, x0, p) - \
+            0.5 * p[0] * p[1]**2 * cos(p[1] * p[1]) * (x[0] - x0[0])**2

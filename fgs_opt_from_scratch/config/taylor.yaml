@@ -8,5 +8,9 @@ model:
   b: -8.
   c: -5.
   d: -7.
+# type: cos
+# a: 2.
+# b: 2.
+
 
 x_range: [-50., 50.]
