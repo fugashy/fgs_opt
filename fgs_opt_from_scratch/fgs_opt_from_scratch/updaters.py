@@ -34,7 +34,7 @@ class GaussNewton():
         # ヤコビアン(パラメータ数 x パラメータ自由度)
         J = np.zeros((len(data), len(model.get_param())))
         for i in range(len(data)):
-            J[i] = model.gradient(data[i])
+            J[i] = model.residual_gradient(data[i])
 
         # 近似されたヘッセ行列の一般逆行列(J.TとJの内積,その一般逆行列)
         AH = np.dot(J.T, J)
@@ -84,7 +84,7 @@ class LevenbergMarquardt():
         # ヤコビアン(パラメータ数 x パラメータ自由度)
         J = np.zeros((len(data), len(model.get_param())))
         for i in range(len(data)):
-            J[i] = model.gradient(data[i])
+            J[i] = model.residual_gradient(data[i])
 
         # 近似されたヘッセ行列(J.TとJの内積)
         AH = np.dot(J.T, J)

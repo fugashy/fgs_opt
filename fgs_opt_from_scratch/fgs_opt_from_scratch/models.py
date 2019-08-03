@@ -85,7 +85,7 @@ class Model(object):
     def residual(self, x):
         return self._r(x, self._p)
 
-    def gradient(self, x):
+    def residual_gradient(self, x):
         return self._rg(x, self._p)
 
     def taylor(self, x, x0):
