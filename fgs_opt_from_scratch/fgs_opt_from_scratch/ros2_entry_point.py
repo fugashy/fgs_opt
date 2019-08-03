@@ -93,7 +93,7 @@ def view_taylor(args=None):
     model = models.create(config_dict['model'])
     x_range = config_dict['x_range']
     plotter = plotters.ClickableTaylorPlotter(model, x_range)
-    plotter.show()
+    plotter.plot()
 
     try:
         input('press enter to terminate')

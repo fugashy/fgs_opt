@@ -23,56 +23,58 @@ class ClickableTaylorPlotter:
     u"""
     描画エリアをクリックしたポイントに応じたテイラー近似を表示するクラス
     """
-    def __init__(self, model, x_range):
-        self.__model = model
-        self.__x = np.arange(x_range[0], x_range[1], 0.1)
-        self.__y = [self.__model.fx([x]) for x in self.__x]
+    def __init__(self, model, x_range, base_x=0.0):
+        self._model = model
+        self._x_list = np.arange(x_range[0], x_range[1], 0.1)
+        self._y_list = [self._model.fx([x]) for x in self._x_list]
 
-        self.__fig = plt.figure('taylor')
-        self.__fig.canvas.mpl_connect('button_press_event', self.onclick)
-        self.__ax = self.__fig.add_subplot(1, 1, 1)
-        self._decorate()
+        self._fig = plt.figure('taylor')
+        self._fig.canvas.mpl_connect('button_press_event', self._onclick)
+        self._ax = self._fig.add_subplot(1, 1, 1)
 
-    def show(self):
-        self.__ax.plot(self.__x, self.__y, linestyle='solid')
-        self.__fig.show()
+        self._taylor1_y_array = []
+        self._taylor2_y_array = []
 
-    def onclick(self, event):
-        if event.xdata is None:
-            return
-        self.update(event.xdata)
+        self.base_x = base_x
+        self._update()
 
-    def update(self, x):
-        self.__fig.clf()
-        self.__ax.cla()
+    def plot(self):
+        self._fig.clf()
+        self._ax.cla()
 
-        self.__fig = plt.figure('taylor')
-        self.__ax = self.__fig.add_subplot(1, 1, 1)
+        self._fig = plt.figure('taylor')
+        self._ax = self._fig.add_subplot(1, 1, 1)
 
-        taylor_x_array = []
-        taylor1_y_array = []
-        taylor2_y_array = []
-        for new_x in self.__x:
-            taylor_x_array.append(new_x)
-            taylor1_y_array.append(self.__model.taylor([new_x], [x], 1))
-            taylor2_y_array.append(self.__model.taylor([new_x], [x], 2))
-
-        self.__ax.plot(self.__x, self.__y, linestyle='solid', label='origin')
-        self.__ax.plot(
-            taylor_x_array, taylor1_y_array,
+        self._ax.plot(self._x_list, self._y_list, linestyle='solid', label='origin')
+        self._ax.plot(
+            self._x_list, self._taylor1_y_array,
             linestyle='dashed', label='1st order approximation')
-        self.__ax.plot(
-            taylor_x_array, taylor2_y_array,
+        self._ax.plot(
+            self._x_list, self._taylor2_y_array,
             linestyle='dashdot', label='2nd order approximation')
-        self.__ax.plot([x], self.__model.fx([x]), marker='.', label='approximation base point')
+        self._ax.plot(
+            [self.base_x], self._model.fx([self.base_x]),
+            marker='.', label='approximation base point')
 
-        self._decorate()
+        self._ax.set_title('Taylor expansion')
+        self._ax.legend(loc='lower right')
+        self._ax.set_ylim(min(self._y_list), max(self._y_list))
+
         plt.pause(0.01)
 
-    def _decorate(self):
-        self.__ax.set_title('Taylor expansion')
-        self.__ax.legend(loc='lower right')
-        self.__ax.set_ylim(min(self.__y), max(self.__y))
+    def _onclick(self, event):
+        if event.xdata is None:
+            return
+        self.base_x = event.xdata
+        self._update()
+        self.plot()
+
+    def _update(self):
+        self._taylor1_y_array = []
+        self._taylor2_y_array = []
+        for x in self._x_list:
+            self._taylor1_y_array.append(self._model.taylor([x], [self.base_x], 1))
+            self._taylor2_y_array.append(self._model.taylor([x], [self.base_x], 2))
 
 
 class Residual2DPlotter:
