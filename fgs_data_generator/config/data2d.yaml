@@ -45,7 +45,7 @@ model:
 
 noise_model:
   type: gaussian
-  sigma: [0., 1.]
+  sigma: [0., 0.001]
 # sigma: [0.001, 0.001]
 
 # Output and visualization

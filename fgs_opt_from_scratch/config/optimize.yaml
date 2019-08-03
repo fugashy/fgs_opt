@@ -20,7 +20,7 @@ model:
 # r: 2.
 # type: michaelis_menten
 # b0: 0.5
-# b1: 0.1
+# b1: 0.3
 # type: cos
 # a: 2.
 # b: 3.
@@ -34,10 +34,10 @@ optimizer:
   tolerance: 0.001
 
 plotter:
-  type: residual2d
-  grid_num: 200
-# type: param2d
-# param_range: [5.5, 5.5]
-# grid_num: 100
+# type: residual2d
+# grid_num: 200
+  type: param2d
+  param_range: [5.5, 5.5]
+  grid_num: 100
 
 #once: True
