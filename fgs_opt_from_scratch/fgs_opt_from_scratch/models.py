@@ -82,7 +82,7 @@ class Model(object):
     def taylor(self, x, x0):
         return \
             [
-                self._tf[order - 1](x, x0, self._p)
+                self._tf[order](x, x0, self._p)
                 for order in range(len(self._tf))
             ]
 
