@@ -102,7 +102,10 @@ class Model(object):
 class Const(Model):
     def __init__(self, p):
         super(Const, self).__init__(p, 2)
+        # 原点からの距離としてしまう
         self._f = lambda x, p: sqrt(x[0]**2 + x[1]**2)
+        # パラメータを重心として，それとの距離を残差とする
+        # 大小関係が大事だからsqrtしなくてもよい
         self._r = lambda x, p: (x[0] - p[0])**2 + (x[1] - p[1])**2
 
         drdx = lambda x, p: -2.0 * (x[0] - p[0])
