@@ -23,10 +23,11 @@ def generate_2d(config_path):
     data = m.create()
     noisy_data = [nm.convert(xy) for xy in data]
     fs.save(noisy_data)
-    if config_dict['plot']:
+    if 'plot' in config_dict and config_dict['plot']:
         plot.model_and_observed(data, noisy_data, ('x', 'f(x)'))
 
     print('Data is done !')
+    return np.array(noisy_data)
 
 def ros2_entry_point(args=None):
     rclpy.init(args=args)

@@ -1,0 +1,49 @@
+model:
+# type: const
+# translation: [5., 6.]
+# num: 100000
+
+# type: line
+# a: 2.
+# b: 5.
+# start: -50.
+# end: 50.
+# step: 0.5
+
+# type: curve2d
+# start: -10.
+# end: 10.
+# step: 1.0
+# a: 1.0
+# b: 1.0
+# c: 1.0
+# # dを有効にすると3次関数
+# d: 1.0
+
+# type: ellipse
+# a: 5.
+# b: 5.
+# rotation: 0.0 # rad
+# translation: [5., 6.]
+# theta_start: 0.
+# theta_end: 6.3
+# theta_step: 0.06
+
+  type: michaelis_menten
+  b1: 0.362
+  b2: 0.556
+  start: 0.001
+  end: 10.
+  step: 0.2
+
+noise_model:
+  type: gaussian
+# sigma: [0., 1.]
+  sigma: [0., 0.001]
+
+# Output and visualization
+saver:
+  type: cv
+  output_path: /tmp/data_const2d.yaml
+
+  #plot: True
