@@ -124,6 +124,13 @@ class MichaelisMentenEquation(Model):
         drdx1 = lambda x, p: p[0] * x[0] / (p[1] + x[0])**2
         self._rg = lambda x, p: [drdx0(x, p), drdx1(x, p)]
 
+        # 分数関数の微分
+        # f(x)/g(x) = {f'(x)g(x) - f(x)g'(x)} / g(x)^2
+        self._tf[0] = lambda x, x0, p: self._f(x0, p) + \
+            p[0] * p[1] / ((p[1] + x0[0])**2) * (x[0] - x0[0])
+        self._tf[1] = lambda x, x0, p: self._tf[0](x, x0, p) - \
+            0.5 * 2.0 * p[0] * p[1]  / ((p[1] + x0[0])**3) * (x[0] - x0[0])**2
+
 
 class Line2d(Model):
     def __init__(self, p):
@@ -133,6 +140,10 @@ class Line2d(Model):
         drda = lambda x, p: -x[0]
         drdb = lambda x, p: -1.0
         self._rg = lambda x, p: [drda(x, p), drdb(x, p)]
+
+        # 意味ないけど一応
+        self._tf[0] = lambda x, x0, p: self._f(x0, p) + p[0] * (x[0] - x0[0])
+        self._tf[1] = lambda x, x0, p: self._tf[0](x, x0, p) + 0.0
 
 
 class Circle2d(Model):
@@ -145,6 +156,9 @@ class Circle2d(Model):
         drdy = lambda x, p: 2. * (x[1] - p[1])
         drdr = lambda x, p: 2. * p[2]
         self._rg = lambda x, p: [drdx(x, p), drdy(x, p), drdr(x, p)]
+
+        # テイラー展開できる？
+        self._tf = None
 
 
 class Curve2d2Order(Model):

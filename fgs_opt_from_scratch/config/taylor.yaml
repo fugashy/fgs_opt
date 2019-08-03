@@ -1,4 +1,7 @@
 model:
+# type: line2d
+# a: 5.
+# b: 2.
 # type: curve2d_2order
 # a: -3.
 # b: -2.
@@ -8,9 +11,12 @@ model:
   b: -8.
   c: -5.
   d: -7.
+# type: michaelis_menten
+# b0: 0.3
+# b1: 0.5
 # type: cos
 # a: 2.
 # b: 2.
 
 
-x_range: [-50., 50.]
+x_range: [0., 10.]
