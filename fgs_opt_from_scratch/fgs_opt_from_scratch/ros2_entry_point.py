@@ -46,7 +46,7 @@ def optimize(args=None):
     # 1周期毎に停止(optional)
     once = False
     if 'once' in opt_config_dict and opt_config_dict['once']:
-        once = config_dict['once']
+        once = opt_config_dict['once']
 
     print('initial param               : {}'.format(model.get_param()))
     print('initial error of sum squares: {}'.format(optimizer.ess()))
