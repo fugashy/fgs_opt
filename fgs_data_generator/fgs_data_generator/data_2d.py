@@ -47,6 +47,13 @@ def create(conf_dict):
         end = conf_dict['end']
         step = conf_dict['step']
         return MichaelisMenten(b1, b2, start, end, step)
+    elif conf_dict['type'] == 'cos':
+        a = conf_dict['a']
+        b = conf_dict['b']
+        start = conf_dict['start']
+        end = conf_dict['end']
+        step = conf_dict['step']
+        return Cos(a, b, start, end, step)
     else:
         raise NotImplementedError(
                 '{} is not implemented.'.format(conf_dict['type']))
@@ -141,3 +148,12 @@ class MichaelisMenten():
         f = lambda x: self.__b1 * x / (self.__b2 + x)
 
         return [ [x, f(x)] for x in x_range]
+
+
+class Cos():
+    def __init__(self, a, b, start, end, step):
+        self._range = np.arange(start, end, step)
+        self._f = lambda x: a * np.cos(b * x)
+
+    def create(self):
+        return [[x, self._f(x)] for x in self._range]

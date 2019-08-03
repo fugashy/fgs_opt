@@ -163,6 +163,8 @@ class Curve2d3Order(Model):
                 (6.*p[0]*x0[0] + 2.*p[1])*(x[0] - x0[0])**2.
 
 
+# Optimization is not good
+# Maybe, residual function is not good
 class Cos(Model):
     def __init__(self, p):
         # p = [a, b]
