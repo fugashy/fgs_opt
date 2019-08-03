@@ -45,11 +45,16 @@ class Model(object):
             p: パラメータ(list of float)
             expected_dof: 期待するdof(int)
         """
-        if type(p) is not list or \
-            type(p[0]) is not float or \
-            len(p) != expected_dof:
-                raise Exception(
-                        'Order of parameter({}) is invalid'.format(len(p)))
+        if type(p) is not list:
+            raise Exception('Parameter should be formed as list')
+
+        if type(p[0]) is not float:
+            raise Exception('Parameter type should be float')
+
+        if len(p) != expected_dof:
+            raise Exception(
+                    'Order of parameter({}) is invalid'.format(len(p)))
+
         # パラメータ
         self._p = p
         # モデル式
