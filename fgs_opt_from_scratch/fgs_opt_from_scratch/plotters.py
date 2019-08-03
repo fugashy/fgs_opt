@@ -34,20 +34,20 @@ class ClickableTaylorPlotter:
         self.__ax.set_ylim(min(self.__y), max(self.__y))
 
     def show(self):
-        self.__ax.plot(self.__x, self.__y, marker='.')
+        self.__ax.plot(self.__x, self.__y, linestyle='solid')
         self.__fig.show()
 
     def onclick(self, event):
         if event.xdata is None:
             return
+        self.update(event.xdata)
 
+    def update(self, x):
         self.__fig.clf()
         self.__ax.cla()
 
         self.__fig = plt.figure('taylor')
         self.__ax = self.__fig.add_subplot(1, 1, 1)
-
-        x = event.xdata
 
         taylor_x_array = []
         taylor1_y_array = []
@@ -57,9 +57,10 @@ class ClickableTaylorPlotter:
             taylor1_y_array.append(self.__model.taylor([new_x], [x], 1))
             taylor2_y_array.append(self.__model.taylor([new_x], [x], 2))
 
-        self.__ax.plot(self.__x, self.__y, marker='.')
-        self.__ax.plot(taylor_x_array, taylor1_y_array, marker='.')
-        self.__ax.plot(taylor_x_array, taylor2_y_array, marker='.')
+        self.__ax.plot(self.__x, self.__y, linestyle='solid')
+        self.__ax.plot(taylor_x_array, taylor1_y_array, linestyle='dashed')
+        self.__ax.plot(taylor_x_array, taylor2_y_array, linestyle='dashdot')
+        self.__ax.plot([x], self.__model.fx([x]), marker='.')
         self.__ax.set_ylim(min(self.__y), max(self.__y))
 
         plt.pause(0.01)
