@@ -31,7 +31,7 @@ class ClickableTaylorPlotter:
         self.__fig = plt.figure('taylor')
         self.__fig.canvas.mpl_connect('button_press_event', self.onclick)
         self.__ax = self.__fig.add_subplot(1, 1, 1)
-        self.__ax.set_ylim(min(self.__y), max(self.__y))
+        self._decorate()
 
     def show(self):
         self.__ax.plot(self.__x, self.__y, linestyle='solid')
@@ -57,13 +57,22 @@ class ClickableTaylorPlotter:
             taylor1_y_array.append(self.__model.taylor([new_x], [x], 1))
             taylor2_y_array.append(self.__model.taylor([new_x], [x], 2))
 
-        self.__ax.plot(self.__x, self.__y, linestyle='solid')
-        self.__ax.plot(taylor_x_array, taylor1_y_array, linestyle='dashed')
-        self.__ax.plot(taylor_x_array, taylor2_y_array, linestyle='dashdot')
-        self.__ax.plot([x], self.__model.fx([x]), marker='.')
-        self.__ax.set_ylim(min(self.__y), max(self.__y))
+        self.__ax.plot(self.__x, self.__y, linestyle='solid', label='origin')
+        self.__ax.plot(
+            taylor_x_array, taylor1_y_array,
+            linestyle='dashed', label='1st order approximation')
+        self.__ax.plot(
+            taylor_x_array, taylor2_y_array,
+            linestyle='dashdot', label='2nd order approximation')
+        self.__ax.plot([x], self.__model.fx([x]), marker='.', label='approximation base point')
 
+        self._decorate()
         plt.pause(0.01)
+
+    def _decorate(self):
+        self.__ax.set_title('Taylor expansion')
+        self.__ax.legend(loc='lower right')
+        self.__ax.set_ylim(min(self.__y), max(self.__y))
 
 
 class Residual2DPlotter:

@@ -33,7 +33,6 @@ def create(config_dict):
     return model(p)
 
 
-
 class Model(object):
     def __init__(self, p, expected_dof):
         u"""
