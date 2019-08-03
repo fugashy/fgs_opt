@@ -51,12 +51,13 @@ def optimize(args=None):
     print('initial param               : {}'.format(model.get_param()))
     print('initial error of sum squares: {}'.format(optimizer.ess()))
 
-    print('optimize...')
+    print('Optimize...')
 
     previous_num = 0
     num_iteration = 0
     while True:
         if plotter:
+            print('Plotting...')
             plotter.plot()
         if once:
             try:
@@ -68,11 +69,10 @@ def optimize(args=None):
         if previous_num == num_iteration:
             break
         previous_num = num_iteration
+        print('num of iteration          : {}'.format(num_iteration))
+        print('current param               : {}'.format(model.get_param()))
+        print('current error of sum squares: {}'.format(optimizer.ess()))
 
-
-    print('num of iteration          : {}'.format(num_iteration))
-    print('final param               : {}'.format(model.get_param()))
-    print('final error of sum squares: {}'.format(optimizer.ess()))
     try:
         input('\npress enter to terminate')
     except:
