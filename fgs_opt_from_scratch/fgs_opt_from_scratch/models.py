@@ -67,8 +67,8 @@ class Model(object):
         self._r = lambda x, p: np.inf
         # 残差勾配
         self._rg = lambda x, p: [np.inf]
-        # モデル式のx0におけるテイラー展開(とりあえず2次まで)
-        self._tf = [lambda x, x0, p: np.inf for i in range(2)]
+        # モデル式のx0におけるテイラー展開
+        self._tf = [lambda x, x0, p: np.inf]
 
     def fx(self, x):
         return self._f(x, self._p)
@@ -128,8 +128,11 @@ class MichaelisMentenEquation(Model):
         # f(x)/g(x) = {f'(x)g(x) - f(x)g'(x)} / g(x)^2
         self._tf[0] = lambda x, x0, p: self._f(x0, p) + \
             p[0] * p[1] / ((p[1] + x0[0])**2) * (x[0] - x0[0])
-        self._tf[1] = lambda x, x0, p: self._tf[0](x, x0, p) - \
-            0.5 * 2.0 * p[0] * p[1]  / ((p[1] + x0[0])**3) * (x[0] - x0[0])**2
+        self._tf.append(
+            lambda x, x0, p: \
+                self._tf[0](x, x0, p) - \
+                p[0] * p[1] / ((p[1] + x0[0])**3) * (x[0] - x0[0])**2
+            )
 
 
 class Line2d(Model):
@@ -141,9 +144,7 @@ class Line2d(Model):
         drdb = lambda x, p: -1.0
         self._rg = lambda x, p: [drda(x, p), drdb(x, p)]
 
-        # 意味ないけど一応
         self._tf[0] = lambda x, x0, p: self._f(x0, p) + p[0] * (x[0] - x0[0])
-        self._tf[1] = lambda x, x0, p: self._tf[0](x, x0, p) + 0.0
 
 
 class Circle2d(Model):
@@ -158,7 +159,7 @@ class Circle2d(Model):
         self._rg = lambda x, p: [drdx(x, p), drdy(x, p), drdr(x, p)]
 
         # テイラー展開できる？
-        self._tf = None
+        self._tf = []
 
 
 class Curve2d2Order(Model):
@@ -177,8 +178,10 @@ class Curve2d2Order(Model):
         self._tf[0] = lambda x, x0, p: self._f(x0, p) + \
                 (2.*p[0]*x0[0] + p[1])*(x[0] - x0[0])
         # f(x0) + {1/1! * f'(x0) * (x - x0)} + {1/2! * f''(x0) * (x - x0)^2
-        self._tf[1] = lambda x, x0, p: self._tf[0](x, x0, p) + \
-                p[0]*(x[0] - x0[0])**2
+        self._tf.append(
+            lambda x, x0, p: \
+                self._tf[0](x, x0, p) + p[0]*(x[0] - x0[0])**2
+            )
 
 
 class Curve2d3Order(Model):
@@ -196,8 +199,11 @@ class Curve2d3Order(Model):
 
         self._tf[0] = lambda x, x0, p: self._f(x0, p) + \
                 (3.*p[0]*x0[0]**2 + 2.*p[1]*x0[0] + p[2])*(x[0] - x0[0])
-        self._tf[1] = lambda x, x0, p: self._tf[0](x, x0, p) + \
+        self._tf.append(
+            lambda x, x0, p: \
+                self._tf[0](x, x0, p) + \
                 (6.*p[0]*x0[0] + 2.*p[1])*(x[0] - x0[0])**2.
+            )
 
 
 # Optimization is not good
@@ -216,5 +222,8 @@ class Cos(Model):
 
         self._tf[0] = lambda x, x0, p: self._f(x0, p) - \
             p[0] * p[1] * sin(p[1] * x0[0]) * (x[0] - x0[0])
-        self._tf[1] = lambda x, x0, p: self._tf[0](x, x0, p) - \
-            0.5 * p[0] * p[1]**2 * cos(p[1] * p[1]) * (x[0] - x0[0])**2
+        self._tf.append(
+            lambda x, x0, p: \
+                self._tf[0](x, x0, p) - \
+                0.5 * p[0] * p[1]**2 * cos(p[1] * p[1]) * (x[0] - x0[0])**2
+            )
