@@ -41,3 +41,7 @@
     ros__parameters:
       config_path: PATH_TO_THIS_PKG/config/taylor.yaml
   ```
+
+  頑張ってクリックすると以下のように見える
+
+![te_3ord](https://raw.github.com/wiki/fugashy/fgs_opt/images/taylor_expansion_of_3order_function.gif)
