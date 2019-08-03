@@ -53,7 +53,7 @@ class Model(object):
         self._r = lambda x, p: np.inf
         # 残差勾配
         self._rg = lambda x, p: [np.inf]
-        # モデル式のx0におけるテイラー展開(2次まで)
+        # モデル式のx0におけるテイラー展開(とりあえず2次まで)
         self._tf = [lambda x, x0, p: np.inf for i in range(2)]
 
     def fx(self, x):
@@ -74,8 +74,15 @@ class Model(object):
     def gradient(self, x):
         return self._rg(x, self._p)
 
-    def taylor(self, x, x0, order):
-        return self._tf[order - 1](x, x0, self._p)
+    def taylor(self, x, x0):
+        return \
+            [
+                self._tf[order - 1](x, x0, self._p)
+                for order in range(len(self._tf))
+            ]
+
+    def taylor_num(self):
+        return len(self._tf)
 
 
 # https://ja.wikipedia.org/wiki/%E3%82%AC%E3%82%A6%E3%82%B9%E3%83%BB%E3%83%8B%E3%83%A5%E3%83%BC%E3%83%88%E3%83%B3%E6%B3%95#%E4%BE%8B

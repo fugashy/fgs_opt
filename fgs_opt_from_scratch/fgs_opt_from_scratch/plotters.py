@@ -32,8 +32,7 @@ class ClickableTaylorPlotter:
         self._fig.canvas.mpl_connect('button_press_event', self._onclick)
         self._ax = self._fig.add_subplot(1, 1, 1)
 
-        self._taylor1_y_array = []
-        self._taylor2_y_array = []
+        self._taylor_y_array = []
 
         self.base_x = base_x
         self._update()
@@ -46,12 +45,11 @@ class ClickableTaylorPlotter:
         self._ax = self._fig.add_subplot(1, 1, 1)
 
         self._ax.plot(self._x_list, self._y_list, linestyle='solid', label='origin')
-        self._ax.plot(
-            self._x_list, self._taylor1_y_array,
-            linestyle='dashed', label='1st order approximation')
-        self._ax.plot(
-            self._x_list, self._taylor2_y_array,
-            linestyle='dashdot', label='2nd order approximation')
+        for order in range(len(self._taylor_y_array)):
+            label = '{} order approximation'.format(order + 1)
+            self._ax.plot(
+                self._x_list, self._taylor_y_array[order],
+                linestyle='dashed', label=label)
         self._ax.plot(
             [self.base_x], self._model.fx([self.base_x]),
             marker='.', label='approximation base point')
@@ -70,11 +68,18 @@ class ClickableTaylorPlotter:
         self.plot()
 
     def _update(self):
-        self._taylor1_y_array = []
-        self._taylor2_y_array = []
+        u"""現在の基点でのテイラー近似結果をx_range範囲内で計算しなおす
+
+        modelからは[y1, y2]という形で返ってくる
+        plotするためには，[[y1_0, y1_1, ..., y1_n], [y2_0, y2_1, ..., y2_n]]という形が望ましい
+        その形にするための処理もする
+        """
+        self._taylor_y_array = [[] for i in range(self._model.taylor_num())]
+
         for x in self._x_list:
-            self._taylor1_y_array.append(self._model.taylor([x], [self.base_x], 1))
-            self._taylor2_y_array.append(self._model.taylor([x], [self.base_x], 2))
+            y_list = self._model.taylor([x], [self.base_x])
+            for i in range(len(y_list)):
+                self._taylor_y_array[i].append(y_list[i])
 
 
 class Residual2DPlotter:
