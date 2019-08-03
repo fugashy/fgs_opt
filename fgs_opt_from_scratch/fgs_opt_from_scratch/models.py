@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 from copy import deepcopy
-from math import cos, sin
+from math import cos, sin, sqrt
 
 def create(config_dict):
-    if config_dict['type'] == 'michaelis_menten':
+    if config_dict['type'] == 'const2d':
         p = [0., 0.]
-        param_keys = ['b0', 'b1']
-        model = MichaelisMentenEquation
+        param_keys = ['x', 'y']
+        model = Const
     elif config_dict['type'] == 'line2d':
         p = [0., 0.]
         param_keys = ['a', 'b']
@@ -23,6 +23,10 @@ def create(config_dict):
         p = [0., 0., 0., 0.]
         param_keys = ['a', 'b', 'c', 'd']
         model = Curve2d3Order
+    elif config_dict['type'] == 'michaelis_menten':
+        p = [0., 0.]
+        param_keys = ['b0', 'b1']
+        model = MichaelisMentenEquation
     elif config_dict['type'] == 'cos':
         p = [0., 0.]
         param_keys = ['a', 'b']
@@ -93,6 +97,17 @@ class Model(object):
 
     def taylor_num(self):
         return len(self._tf)
+
+
+class Const(Model):
+    def __init__(self, p):
+        super(Const, self).__init__(p, 2)
+        self._f = lambda x, p: sqrt(x[0]**2 + x[1]**2)
+        self._r = lambda x, p: (x[0] - p[0])**2 + (x[1] - p[1])**2
+
+        drdx = lambda x, p: -2.0 * (x[0] - p[0])
+        drdy = lambda x, p: -2.0 * (x[1] - p[1])
+        self._rg = lambda x, p: [drdx(x, p), drdy(x, p)]
 
 
 # https://ja.wikipedia.org/wiki/%E3%82%AC%E3%82%A6%E3%82%B9%E3%83%BB%E3%83%8B%E3%83%A5%E3%83%BC%E3%83%88%E3%83%B3%E6%B3%95#%E4%BE%8B
