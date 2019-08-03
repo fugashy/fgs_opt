@@ -7,7 +7,7 @@ import yaml
 import rclpy
 from rclpy.node import Node
 
-from fgs_opt_data_storage import (
+from fgs_data_generator import (
     data_2d, noise_model, saver, plot
 )
 
