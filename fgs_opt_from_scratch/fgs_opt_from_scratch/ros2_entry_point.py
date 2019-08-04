@@ -29,19 +29,19 @@ def optimize(args=None):
         opt_config_dict = yaml.load(f, Loader=yaml.FullLoader)
 
     # モデル
-    model = models.create(opt_config_dict['model'])
+    model = models.create(opt_config_dict['model'], data.center, data.cov)
 
     # パラメータ更新器
     updater = updaters.create(opt_config_dict['updater'])
 
     # 最適化処理クラス
     optimizer = optimizers.create(
-        model, data, updater, opt_config_dict['optimizer'])
+        model, data.obs, updater, opt_config_dict['optimizer'])
 
     # 描画クラス(optional)
     plotter = None
     if 'plotter' in opt_config_dict and opt_config_dict['plotter']:
-        plotter = plotters.create(opt_config_dict['plotter'], model, data)
+        plotter = plotters.create(opt_config_dict['plotter'], model, data.obs)
 
     # 1周期毎に停止(optional)
     once = False
