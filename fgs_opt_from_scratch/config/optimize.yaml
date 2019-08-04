@@ -16,7 +16,7 @@ model:
 # d: 4.
 # type: circle2d
 # x: 3.
-# y: -1.
+# y: 1.
 # r: 2.
 # type: michaelis_menten
 # b0: 0.5
@@ -31,13 +31,13 @@ updater:
   weight: 0.0001
 
 optimizer:
-  tolerance: 0.001
+  tolerance: 0.00001
 
 plotter:
-# type: residual2d
-# grid_num: 200
-  type: param2d
-  param_range: [5.5, 5.5]
-  grid_num: 100
+  type: residual2d
+  grid_num: 200
+# type: param2d
+# param_range: [5.5, 5.5]
+# grid_num: 100
 
 #once: True

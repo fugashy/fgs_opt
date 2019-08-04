@@ -5,9 +5,10 @@ import numpy as np
 
 
 def create(config_dict, model, data):
+    npdata = np.array(data)
     if config_dict['type'] == 'residual2d':
-        x_range = [min(data.T[0]), max(data.T[0])]
-        y_range = [min(data.T[1]), max(data.T[1])]
+        x_range = [min(npdata.T[0]), max(npdata.T[0])]
+        y_range = [min(npdata.T[1]), max(npdata.T[1])]
         grid_num = config_dict['grid_num']
         return Residual2DPlotter(model, x_range, y_range, grid_num)
     elif config_dict['type'] == 'param2d':

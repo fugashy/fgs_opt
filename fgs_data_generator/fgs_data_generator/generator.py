@@ -19,7 +19,7 @@ def generate_2d(config_path):
     data.save('/tmp/data_2d.yaml')
 
     if 'plot' in config_dict and config_dict['plot']:
-        plot.model_and_observed(data, noise_data.observations, ('x', 'f(x)'))
+        plot.model_and_observed(data.gt, data.obs, ('x', 'f(x)'))
 
     print('Data is done !')
     return data

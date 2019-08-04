@@ -10,7 +10,7 @@ model:
   start: -50.
   end: 50.
   step: 0.5
-  std_dev: [0., 9.0]
+  std_dev: [0., 1.0]
 
 # type: curve2d
 # start: -10.
@@ -21,7 +21,7 @@ model:
 # c: 1.0
 # # dを有効にすると3次関数
 # d: 1.0
-# std_dev: [0., 3.0]
+# std_dev: [0., 1.0]
 
 # type: ellipse
 # a: 5.
@@ -49,4 +49,4 @@ model:
 # step: 0.2
 # std_dev: [0., 1.0]
 
-# plot: True
+  # plot: True

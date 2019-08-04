@@ -111,9 +111,9 @@ class Curve2d(Data2d):
     def __init__(self, s, e, st, p, std_dev):
         super(Curve2d, self).__init__(std_dev)
         if len(p) == 3:
-            f = lambda x, p: p[0] * x**2 + p[1] * x + p[2]
+            f = lambda x: p[0] * x**2 + p[1] * x + p[2]
         elif len(p) == 4:
-            f = lambda x, p: p[0] * x**3 + p[1] * x**2 + p[2] * x + p[3]
+            f = lambda x: p[0] * x**3 + p[1] * x**2 + p[2] * x + p[3]
         else:
             raise Exception('Invalid parameter length.')
 
@@ -130,15 +130,15 @@ class Ellipse(Data2d):
             [a * np.cos(t) + trs[0], b * np.sin(t) + trs[1]])
         rot_mat = np.array(
             [
-                [np.cos(self.__rot), -np.sin(self.__rot)],
-                [np.sin(self.__rot), np.cos(self.__rot)]
+                [np.cos(r), -np.sin(r)],
+                [np.sin(r), np.cos(r)]
             ])
         generate_data = lambda: [rot_mat @  xy(t) for t in theta_range]
         self._generate(generate_data)
 
 
 class Const(Data2d):
-    def __init__(self, translation, num, std_dev):
+    def __init__(self, trs, num, std_dev):
         super(Const, self).__init__(std_dev)
         generate_data = lambda : [trs for i in range(num)]
         self._generate(generate_data)
@@ -159,6 +159,7 @@ class MichaelisMenten(Data2d):
         x_range = np.arange(s, e, st)
         f = lambda x: b1 * x / (b2 + x)
         generate_data = lambda: [[x, f(x)] for x in x_range]
+        self._generate(generate_data)
 
 
 class Cos(Data2d):
@@ -167,3 +168,4 @@ class Cos(Data2d):
         x_range = np.arange(start, end, step)
         f = lambda x: a * np.cos(b * x)
         generate_data = lambda: [[x, f(x)] for x in x_range]
+        self._generate(generate_data)
