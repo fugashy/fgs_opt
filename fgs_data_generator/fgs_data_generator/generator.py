@@ -8,26 +8,21 @@ import rclpy
 from rclpy.node import Node
 
 from fgs_data_generator import (
-    data_2d, noise_model, saver, plot
+    data_2d, plot
 )
 
 def generate_2d(config_path):
     f = open(config_path, 'r')
     config_dict = yaml.load(f, Loader=yaml.FullLoader)
 
-    m = data_2d.create(config_dict['model'])
-    nm = noise_model.create(config_dict['noise_model'])
-    fs = saver.create(config_dict['saver'])
+    data = data_2d.create(config_dict['model'])
+    data.save('/tmp/data_2d.yaml')
 
-    # generate
-    data = m.create()
-    noisy_data = [nm.convert(xy) for xy in data]
-    fs.save(noisy_data)
     if 'plot' in config_dict and config_dict['plot']:
-        plot.model_and_observed(data, noisy_data, ('x', 'f(x)'))
+        plot.model_and_observed(data, noise_data.observations, ('x', 'f(x)'))
 
     print('Data is done !')
-    return np.array(noisy_data)
+    return data
 
 def ros2_entry_point(args=None):
     rclpy.init(args=args)

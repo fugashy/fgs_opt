@@ -1,5 +1,4 @@
 from sys import exit, argv
-import saver
 
 
 # See this link for detail
@@ -53,7 +52,11 @@ def main(args=None):
         all_data.append(all_camera_params)
         all_data.append(all_points)
 
-    saver.save_ba_in_large_as_cv('/tmp/cv_ba_in_large.yaml', all_data)
+    file_handle = cv2.FileStorage('/tmp/cv_ba_in_large.yaml', cv2.FileStorage_WRITE)
+    file_handle.write('observations', np.array(all_data[0]))
+    file_handle.write('camera_parameters', np.array(all_data[1]))
+    file_handle.write('points', np.array(all_data[2]))
+
     print('done')
 
 
