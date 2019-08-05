@@ -5,48 +5,39 @@ from math import cos, sin, sqrt
 import numpy as np
 import numpy.linalg as LA
 
-def create(config_dict, center, cov):
+def create(config_dict):
     if config_dict['type'] == 'const2d':
-        p = [0., 0.]
-        param_keys = ['x', 'y']
-        model = Const
+        return Const.create(config_dict)
     elif config_dict['type'] == 'line2d':
-        p = [0., 0.]
-        param_keys = ['a', 'b']
-        model = Line2d
+        return Line2d.create(config_dict)
     elif config_dict['type'] == 'circle2d':
-        p = [0., 0., 0.]
-        param_keys = ['x', 'y', 'r']
-        model = Circle2d
+        return Circle2d.create(config_dict)
     elif config_dict['type'] == 'curve2d_2order':
-        p = [0., 0., 0.]
-        param_keys = ['a', 'b', 'c']
-        model = Curve2d2Order
+        return Curve2d2Order.create(config_dict)
     elif config_dict['type'] == 'curve2d_3order':
-        p = [0., 0., 0., 0.]
-        param_keys = ['a', 'b', 'c', 'd']
-        model = Curve2d3Order
+        return Curve2d3Order.create(config_dict)
     elif config_dict['type'] == 'michaelis_menten':
-        p = [0., 0.]
-        param_keys = ['b0', 'b1']
-        model = MichaelisMentenEquation
+        return MichaelisMentenEquation.create(config_dict)
     elif config_dict['type'] == 'cos':
-        p = [0., 0.]
-        param_keys = ['a', 'b']
-        model = Cos
+        return Cos.create(config_dict)
     else:
         raise NotImplementedError(
             'type {] is not implemented'.format(config_dict['type']))
 
-    for i, param_key in enumerate(param_keys):
+def _parse_param(config_dict, param_keys):
+    p = []
+    for param_key in param_keys:
         if param_key in config_dict and config_dict[param_key]:
-            p[i] = config_dict[param_key]
+            p.append(config_dict[param_key])
 
-    return model(p, list(center), list(cov))
+    if len(p) == 0:
+        raise ValueError('Failed to find expected keys of parameter')
+
+    return p
 
 
 class Model(object):
-    def __init__(self, p, center, cov, expected_dof):
+    def __init__(self, p, expected_dof):
         u"""
         Args:
             p: パラメータ(list of float)
@@ -72,10 +63,6 @@ class Model(object):
         self._rg = lambda x, p: [np.inf]
         # モデル式のx0におけるテイラー展開
         self._tf = [lambda x, x0, p: np.inf]
-
-        self._c = np.array(center)
-        self._cov = np.diag(cov)
-        self._li = lambda x, p, c, cov: np.inf
 
     def fx(self, x):
         return self._f(x, self._p)
@@ -105,13 +92,16 @@ class Model(object):
     def taylor_num(self):
         return len(self._tf)
 
-    def likelihood(self, x):
-        return self._li(x, self._p, self._c, self._cov)
-
 
 class Const(Model):
-    def __init__(self, p, center, cov):
-        super(Const, self).__init__(p, center, cov, 2)
+    @staticmethod
+    def create(config_dict):
+        param_keys = ['x', 'y']
+        p = _parse_param(config_dict, param_keys)
+        return Const(p)
+
+    def __init__(self, p):
+        super(Const, self).__init__(p, 2)
         # 原点からの距離としてしまう
         self._f = lambda x, p: sqrt(x[0]**2 + x[1]**2)
         # パラメータを重心として，それとの距離を残差とする
@@ -122,18 +112,17 @@ class Const(Model):
         drdy = lambda x, p: -2.0 * (x[1] - p[1])
         self._rg = lambda x, p: [drdx(x, p), drdy(x, p)]
 
-        # 尤度関数
-        # 正規分布
-        self._li = lambda x, p, c, cov: \
-            (np.sqrt(2. * np.pi) * LA.det(cov))**(-1) * \
-            np.exp(-0.5 * (x - p) @ LA.inv(cov) @ (x - p).T)
-
 
 # https://ja.wikipedia.org/wiki/%E3%82%AC%E3%82%A6%E3%82%B9%E3%83%BB%E3%83%8B%E3%83%A5%E3%83%BC%E3%83%88%E3%83%B3%E6%B3%95#%E4%BE%8B
 # x1 = p0*x0 / (p1 + x0)
 class MichaelisMentenEquation(Model):
-    def __init__(self, p, center, cov):
-        super(MichaelisMentenEquation, self).__init__(p, center, cov, 2)
+    @staticmethod
+    def create(config_dict):
+        param_keys = ['b0', 'b1']
+        p = _parse_param(config_dict, param_keys)
+        return MichaelisMentenEquation(p)
+    def __init__(self, p):
+        super(MichaelisMentenEquation, self).__init__(p, 2)
         self._f = lambda x, p: p[0] * x[0] / (p[1] + x[0])
         self._r = lambda x, p: x[1] - self._f(x, p)
         drdx0 = lambda x, p: -x[0] / (p[1] + x[0])
@@ -152,8 +141,14 @@ class MichaelisMentenEquation(Model):
 
 
 class Line2d(Model):
-    def __init__(self, p, center, cov):
-        super(Line2d, self).__init__(p, center, cov, 2)
+    @staticmethod
+    def create(config_dict):
+        param_keys = ['a', 'b']
+        p = _parse_param(config_dict, param_keys)
+        return Line2d(p)
+
+    def __init__(self, p):
+        super(Line2d, self).__init__(p, 2)
         self._f = lambda x, p: p[0]*x[0] + p[1]
         self._r = lambda x, p: x[1] - self._f(x, p)
         drda = lambda x, p: -x[0]
@@ -164,8 +159,13 @@ class Line2d(Model):
 
 
 class Circle2d(Model):
-    def __init__(self, p, center, cov):
-        super(Circle2d, self).__init__(p, center, cov, 3)
+    def create(config_dict):
+        param_keys = ['x', 'y', 'r']
+        p = _parse_param(config_dict, param_keys)
+        return Circle2d(p)
+
+    def __init__(self, p):
+        super(Circle2d, self).__init__(p, 3)
         self._f = lambda x, p: (x[0] - p[0])**2 + (x[1] - p[1])**2
         self._r = lambda x, p: p[2]**2 - self._f(x, p)
 
@@ -179,8 +179,14 @@ class Circle2d(Model):
 
 
 class Curve2d2Order(Model):
-    def __init__(self, p, center, cov):
-        super(Curve2d2Order, self).__init__(p, center, cov, 3)
+    @staticmethod
+    def create(config_dict):
+        param_keys = ['a', 'b', 'c']
+        p = _parse_param(config_dict, param_keys)
+        return Curve2d2Order(p)
+
+    def __init__(self, p):
+        super(Curve2d2Order, self).__init__(p, 3)
         # y = ax**2 + bx + c
         self._f = lambda x, p: p[0]*x[0]**2 + p[1]*x[0] + p[2]
         self._r = lambda x, p: x[1] - self._f(x, p)
@@ -201,8 +207,14 @@ class Curve2d2Order(Model):
 
 
 class Curve2d3Order(Model):
-    def __init__(self, p, center, cov):
-        super(Curve2d3Order, self).__init__(p, center, cov, 4)
+    @staticmethod
+    def create(config_dict):
+        param_keys = ['a', 'b', 'c', 'd']
+        p = _parse_param(config_dict, param_keys)
+        return Curve2d3Order(p)
+
+    def __init__(self, p):
+        super(Curve2d3Order, self).__init__(p, 4)
         # y = ax**3 + bx**2 + cx + d
         self._f = lambda x, p: p[0]*x[0]**3 + p[1]*x[0]**2 + p[2]*x[0] + p[3]
         self._r = lambda x, p: x[1] - self._f(x, p)
@@ -225,9 +237,15 @@ class Curve2d3Order(Model):
 # Optimization is not good
 # Maybe, residual function is not good
 class Cos(Model):
-    def __init__(self, p, center, cov):
+    @staticmethod
+    def create(config_dict):
+        param_keys = ['a', 'b']
+        p = _parse_param(config_dict, param_keys)
+        return Cos(p)
+
+    def __init__(self, p):
         # p = [a, b]
-        super(Cos, self).__init__(p, center, cov, 2)
+        super(Cos, self).__init__(p, 2)
         # y = a*cos(bx)
         self._f = lambda x, p: p[0] * cos(p[1] * x[0])
         self._r = lambda x, p: x[1] - self._f(x, p)
