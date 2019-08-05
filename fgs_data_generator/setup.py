@@ -24,7 +24,7 @@ setup(
     test_suite='test',
     entry_points={
         'console_scripts': [
-            'generate_data_2d = fgs_data_generator.generator:ros2_entry_point',
+            'generate = fgs_data_generator.ros2_entry_point:generate',
             'convert_ba_in_large_to_cv = fgs_data_generator.convert_ba_in_large_to_cv:main',
         ],
     },
