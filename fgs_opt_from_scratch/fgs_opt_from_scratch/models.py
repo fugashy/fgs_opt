@@ -2,6 +2,8 @@
 from copy import deepcopy
 from math import cos, sin, sqrt
 
+import numpy as np
+
 def create(config_dict, center, cov):
     if config_dict['type'] == 'const2d':
         p = [0., 0.]
@@ -71,7 +73,8 @@ class Model(object):
         self._tf = [lambda x, x0, p: np.inf]
 
         self._c = center
-        self._cov = cov
+        self._cov = list(np.diag(cov))
+        self._li = lambda x, p, c, cov: np.inf
 
     def fx(self, x):
         return self._f(x, self._p)
@@ -101,8 +104,8 @@ class Model(object):
     def taylor_num(self):
         return len(self._tf)
 
-    def likelihood(self):
-        pass
+    def likelihood(self, x):
+        return self._li(x, self._p, self._c, self._cov)
 
 
 class Const(Model):
