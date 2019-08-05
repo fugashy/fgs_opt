@@ -9,7 +9,7 @@ import yaml
 from fgs_opt_from_scratch import (
     models, optimizers, updaters, plotters
 )
-from fgs_data_generator.generator import generate_2d
+from fgs_data_generator.generate import generate
 
 
 def optimize(args=None):
@@ -22,7 +22,7 @@ def optimize(args=None):
 
     # データ
     data_config_path = node.get_parameter('data_config_path').value
-    data = generate_2d(data_config_path)
+    data = generate(data_config_path, as_node=True)
 
     opt_config_path = node.get_parameter('opt_config_path').value
     with open(opt_config_path, 'r') as f:

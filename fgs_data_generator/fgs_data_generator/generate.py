@@ -6,9 +6,13 @@ import numpy as np
 import yaml
 
 
-import data_2d, plot
 
-def generate(config_path):
+def generate(config_path, as_node=False):
+    if as_node:
+        from fgs_data_generator import data_2d, plot
+    else:
+        import data_2d, plot
+
     f = open(config_path, 'r')
     config_dict = yaml.load(f, Loader=yaml.FullLoader)
 
