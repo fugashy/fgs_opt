@@ -1,16 +1,16 @@
 model:
-# type: const
-# translation: [5., 6.]
-# num: 100
-# std_dev: [1., 1.]
+  type: const
+  translation: [5., 6.]
+  num: 100
+  std_dev: [1., 1.]
 
-  type: line
-  a: 2.
-  b: 5.
-  start: -50.
-  end: 50.
-  step: 0.5
-  std_dev: [0., 1.0]
+# type: line
+# a: 2.
+# b: 5.
+# start: -50.
+# end: 50.
+# step: 0.5
+# std_dev: [0., 1.0]
 
 # type: curve2d
 # start: -10.

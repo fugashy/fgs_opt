@@ -36,6 +36,13 @@ class Optimizer():
 
         return ess
 
+    def likelihood(self):
+        likelihood = 0.0
+        for data in self.__data:
+            likelihood += self.__model.likelihood(data)
+
+        return likelihood
+
     def optimize(self, once=False):
         u"""
         更新ベクトルのノルムが一定値になるまでパラメータの更新を行う

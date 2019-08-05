@@ -3,6 +3,7 @@ from copy import deepcopy
 from math import cos, sin, sqrt
 
 import numpy as np
+import numpy.linalg as LA
 
 def create(config_dict, center, cov):
     if config_dict['type'] == 'const2d':
@@ -62,7 +63,7 @@ class Model(object):
                     'Order of parameter({}) is invalid'.format(len(p)))
 
         # パラメータ
-        self._p = p
+        self._p = np.array(p)
         # モデル式
         self._f = lambda x, p: np.inf
         # 残差式
@@ -72,8 +73,8 @@ class Model(object):
         # モデル式のx0におけるテイラー展開
         self._tf = [lambda x, x0, p: np.inf]
 
-        self._c = center
-        self._cov = list(np.diag(cov))
+        self._c = np.array(center)
+        self._cov = np.diag(cov)
         self._li = lambda x, p, c, cov: np.inf
 
     def fx(self, x):
@@ -120,6 +121,12 @@ class Const(Model):
         drdx = lambda x, p: -2.0 * (x[0] - p[0])
         drdy = lambda x, p: -2.0 * (x[1] - p[1])
         self._rg = lambda x, p: [drdx(x, p), drdy(x, p)]
+
+        # 尤度関数
+        # 正規分布
+        self._li = lambda x, p, c, cov: \
+            (np.sqrt(2. * np.pi) * LA.det(cov))**(-1) * \
+            np.exp(-0.5 * (x - p) @ LA.inv(cov) @ (x - p).T)
 
 
 # https://ja.wikipedia.org/wiki/%E3%82%AC%E3%82%A6%E3%82%B9%E3%83%BB%E3%83%8B%E3%83%A5%E3%83%BC%E3%83%88%E3%83%B3%E6%B3%95#%E4%BE%8B

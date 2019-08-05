@@ -50,6 +50,7 @@ def optimize(args=None):
 
     print('initial param               : {}'.format(model.get_param()))
     print('initial error of sum squares: {}'.format(optimizer.ess()))
+    print('initial likelihood: {}'.format(optimizer.likelihood()))
 
     print('Optimize...')
 
@@ -72,6 +73,7 @@ def optimize(args=None):
         print('num of iteration          : {}'.format(num_iteration))
         print('current param               : {}'.format(model.get_param()))
         print('current error of sum squares: {}'.format(optimizer.ess()))
+        print('current likelihood: {}'.format(optimizer.likelihood()))
 
     try:
         input('\npress enter to terminate')
