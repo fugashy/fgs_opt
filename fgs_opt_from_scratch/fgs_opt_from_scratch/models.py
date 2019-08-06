@@ -156,6 +156,7 @@ class Line2d(Model):
         self._rg = lambda x, p: [drda(x, p), drdb(x, p)]
 
         self._tf[0] = lambda x, x0, p: self._f(x0, p) + p[0] * (x[0] - x0[0])
+        self._tf.append(lambda x, x0, p: self._tf[0](x, x0, p))
 
 
 class Circle2d(Model):

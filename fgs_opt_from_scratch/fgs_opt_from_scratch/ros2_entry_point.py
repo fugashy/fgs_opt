@@ -7,9 +7,13 @@ from rclpy.node import Node
 import yaml
 
 from fgs_opt_from_scratch import (
-    models, optimizers, updaters, plotters
+    models, optimizers, updaters, plotters, taylor_expansion_context
 )
 from fgs_data_generator.generate import generate
+
+
+import time
+import numpy as np
 
 
 def optimize(args=None):
@@ -92,11 +96,12 @@ def view_taylor(args=None):
     config_dict = yaml.load(f, Loader=yaml.FullLoader)
 
     model = models.create(config_dict['model'])
-    x_range = config_dict['x_range']
-    plotter = plotters.ClickableTaylorPlotter(model, x_range)
-    plotter.plot()
+    contex = taylor_expansion_context.create(config_dict['context'], model)
+    contex.run_expansion()
 
     try:
         input('press enter to terminate')
     except:
         pass
+
+    exit(0)

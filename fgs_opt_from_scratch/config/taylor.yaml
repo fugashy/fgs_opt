@@ -1,3 +1,11 @@
+context:
+  type: clickable
+  x_range: [-20., 20.]
+  x_step_ratio: 0.05
+# type: scan_range
+# x_range: [-20., 20.]
+# x_step_ratio: 0.01
+# cycle_sec: 0.002  # sec
 model:
 # type: line2d
 # a: 5.
@@ -8,9 +16,9 @@ model:
 # c: 5.
   type: curve2d_3order
   a: 1.
-  b: -8.
-  c: -5.
-  d: -7.
+  b: 1.
+  c: 1.
+  d: 1.
 # type: michaelis_menten
 # b0: 0.3
 # b1: 0.5
@@ -18,5 +26,3 @@ model:
 # a: 2.
 # b: 2.
 
-
-x_range: [0., 10.]

@@ -24,9 +24,9 @@ class ClickableTaylorPlotter:
     u"""
     描画エリアをクリックしたポイントに応じたテイラー近似を表示するクラス
     """
-    def __init__(self, model, x_range, base_x=0.0):
+    def __init__(self, model, x_list, base_x=0.0):
         self._model = model
-        self._x_list = np.arange(x_range[0], x_range[1], 0.1)
+        self._x_list = x_list
         self._y_list = [self._model.fx([x]) for x in self._x_list]
 
         self._fig = plt.figure('taylor')
@@ -36,7 +36,7 @@ class ClickableTaylorPlotter:
         self._taylor_y_array = []
 
         self.base_x = base_x
-        self._update()
+        self.update()
 
     def plot(self):
         self._fig.clf()
@@ -65,10 +65,10 @@ class ClickableTaylorPlotter:
         if event.xdata is None:
             return
         self.base_x = event.xdata
-        self._update()
+        self.update()
         self.plot()
 
-    def _update(self):
+    def update(self):
         u"""現在の基点でのテイラー近似結果をx_range範囲内で計算しなおす
 
         modelからは[y1, y2]という形で返ってくる
