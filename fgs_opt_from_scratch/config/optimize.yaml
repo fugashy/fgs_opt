@@ -1,10 +1,10 @@
 model:
-  type: const2d
-  x: 3.
-  y: 5.
-# type: line2d
-# a: 5.
-# b: 2.
+# type: const2d
+# x: 3.
+# y: 5.
+  type: line2d
+  a: 5.
+  b: 2.
 # type: curve2d_2order
 # a: 1.
 # b: 2.
