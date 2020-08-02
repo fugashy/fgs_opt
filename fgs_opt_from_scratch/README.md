@@ -6,6 +6,26 @@
 
 <https://www.kyoritsu-pub.co.jp/kenpon/bookDetail/9784320017863>
 
+# 動作確認環境
+
+- MacOS 10.15.5 (19F101
+- ROS2 dashing
+
+# 動作準備
+
+```bash
+# ワークスペースの設定
+. ~/work/ros2/ros2-osx/setup.bash && . ~/work/ros2/HDE/x86_64.darwin10_clang/release.com
+. ~/work/dashing_ws/install/setup.bash && . ~/work/dashing_ws/install/local_setup.bash
+
+# データ生成用パッケージのビルド確認
+# https://github.com/fugashy/fgs_data_generator
+colcon build --package-selected fgs_data_generator
+
+# ビルド
+colcon build --package-selected fgs_opt_from_scratch
+```
+
 # 実行可能ファイル
 
 - optimize

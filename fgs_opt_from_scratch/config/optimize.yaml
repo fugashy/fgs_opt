@@ -1,10 +1,11 @@
+# initial parameters to optimize
 model:
 # type: const2d
 # x: 3.
 # y: 5.
   type: line2d
-  a: 5.
-  b: 2.
+  a: 4.
+  b: -9.
 # type: curve2d_2order
 # a: 1.
 # b: 2.
@@ -34,10 +35,10 @@ optimizer:
   tolerance: 0.00001
 
 plotter:
-  type: residual2d
-  grid_num: 200
-# type: param2d
-# param_range: [5.5, 5.5]
-# grid_num: 100
+# type: residual2d
+# grid_num: 200
+  type: param2d
+  param_range: [5.5, 5.5]
+  grid_num: 100
 
 #once: True
