@@ -3,9 +3,9 @@ model:
 # type: const2d
 # x: 3.
 # y: 5.
-  type: line2d
-  a: 4.
-  b: -9.
+# type: line2d
+# a: 4.
+# b: -9.
 # type: curve2d_2order
 # a: 1.
 # b: 2.
@@ -19,9 +19,9 @@ model:
 # x: 3.
 # y: 1.
 # r: 2.
-# type: michaelis_menten
-# b0: 0.5
-# b1: 0.3
+  type: michaelis_menten
+  b0: 0.5
+  b1: 0.3
 # type: cos
 # a: 2.
 # b: 3.
@@ -41,4 +41,4 @@ plotter:
   param_range: [5.5, 5.5]
   grid_num: 100
 
-#once: True
+once: True
